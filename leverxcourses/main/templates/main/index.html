@@ -1,0 +1,33 @@
+{% extends 'main/layout.html' %}
+
+{% load static %}
+
+{% block title %}{{ title }}{% endblock %}
+
+{% block menu %}
+    <img src="{% static 'main/img/img_LeverX.png' %}" alt="Logo">
+        <ul>
+        </ul>
+{% endblock %}
+
+{% block content %}
+<div>
+    <ul class="no-bullets">
+        <li>
+            <div class="main-block">
+                <div>
+                    <a href="{% url 'course' %}"><h3>Python</h3></a>
+                </div>
+                <div>
+                    {% for el in values%}
+                        <h5>{{ el }}</h5>
+                    {% endfor%}
+                </div>
+            </div>
+        </li>
+    </ul>
+</div>
+{% endblock %}
+
+
+{% include 'main/test_include.html'%}

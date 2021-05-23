@@ -1,0 +1,18 @@
+{% extends 'main/layout.html' %}
+
+{% load static %}
+
+{% block title %}{{ title }}{% endblock %}
+
+{% block menu %}
+    <img src="{% static 'main/img/img_LeverX.png' %}" alt="Logo">
+    <span class="Logo">Python Course</span>
+        <ul>
+            <a href="{% url 'lectures' %}"><li><i class="fas fa-chalkboard-teacher"></i> Lectures </li></a>
+            <a href="{% url 'tasks' %}"><li><i class="fas fa-tasks"></i> Tasks </li></a>
+            <a href="{% url 'home' %}"><botton class="btn btn-info">Home</botton></a>
+        </ul>
+{% endblock %}
+
+{% block content %}
+{% endblock %}
