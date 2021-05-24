@@ -1,16 +1,17 @@
 body {
     'background: #3F9999;
     'background: #688787;
+    '#B0D6D2;
 }
 
 aside {
     float: left;
-    background: #B0D6D2;
+    background: #A1C4C4;
     height: 100vh;
     width: 18%;
     padding: 2.5%;
     color: #fff;
-    'border-right: 1px solid #000;
+    border-right: 1px solid grey;
 }
 
 aside img {
@@ -32,7 +33,7 @@ aside ul li {
     font-size: 25px;
     display: block;
     margin-top: 10px;
-    transition: transform 0.05s ease;
+    transition: transform 0.1s ease;
 }
 
 aside ul li:hover, aside ul a:hover {
@@ -54,3 +55,39 @@ ul.no-bullets {
     border: 2px solid gray;
     border-radius: 20px;
 }
+
+
+.main-name{
+    color: #50555E;
+    font-size: 25px;
+    display: block;
+    margin-top: 10px;
+    transition: transform 0.1s ease;
+}
+
+.main-logo{
+    color: #50555E;
+    font-size: 25px;
+    display: block;
+    margin-top: 10px;
+}
+.main-name:hover {
+    color: #0F3069;
+    text-decoration: none;
+    transform: scale(1.1);
+}
+
+.add-block{
+    float: left;
+    width: 70%;
+    margin: 20px;
+    padding: 20px;
+}
+
+form{
+    margin-left:32%;
+    width:500px;
+    margin-top:50px;
+}
+
+

@@ -5,29 +5,41 @@
 {% block title %}{{ title }}{% endblock %}
 
 {% block menu %}
-    <img src="{% static 'main/img/img_LeverX.png' %}" alt="Logo">
-        <ul>
-        </ul>
+
+
 {% endblock %}
 
 {% block content %}
 <div>
     <ul class="no-bullets">
+        {% if courses %}
+        {% for el in courses %}
         <li>
             <div class="main-block">
-                <div>
-                    <a href="{% url 'course' %}"><h3>Python</h3></a>
-                </div>
-                <div>
-                    {% for el in values%}
-                        <h5>{{ el }}</h5>
-                    {% endfor%}
+                <img width='70px' height="70px" style="display: inline-block"
+                     src="{% static 'main/img/python.jpg' %}">
+                <div style="display: inline-block; position:relative; left:20px; top:10px;">
+                    <a href="{% url 'course' %}" class="main-name"><h3>{{el.name}}</h3></a>
+                    <div>
+                        <!--                        {% for le in el.lecturers %}-->
+                        <!--                        <span>{{ le }} *</span>-->
+                        <!--                        {% endfor%}-->
+                    </div>
                 </div>
             </div>
         </li>
+        {% endfor %}
+        <li>
+            <div class="add-block">
+                <a href="{% url 'create' %}">
+                    <button class="btn btn-info"><i class="fas fa-plus-circle"></i>Add course</button>
+                </a>
+            </div>
+        </li>
+        {% else %}
+        <p> No records </p>
+        {% endif %}
+
     </ul>
 </div>
 {% endblock %}
-
-
-{% include 'main/test_include.html'%}

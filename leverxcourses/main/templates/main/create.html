@@ -1,0 +1,16 @@
+{% extends 'main/layout.html' %}
+
+{% load static %}
+
+{% block title %}Add Course{% endblock %}
+
+{% block content %}
+    <div class="features">
+        <h1 style="margin-left:32%">Add Course</h1>
+        <form method="post">
+            <input type="text" placeholder="Name of course" class="form-control"><br>
+            <input type="text" placeholder="Course group" class="form-control"><br>
+            <button class="btn btn-success" type="submit">Add Course</button>
+        </form>
+    </div>
+{% endblock %}

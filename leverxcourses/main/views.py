@@ -1,12 +1,10 @@
 from django.shortcuts import render
+from .models import Course
 
 
 def index(request):
-    data = {
-        'title': 'Home',
-        'values': ['Vitali Kudzelka', '2','3']
-    }
-    return render(request, 'main/index.html',data)
+    courses = Course.objects.all()
+    return render(request, 'main/index.html', {'courses' : courses})
 
 
 def course(request):
@@ -31,3 +29,6 @@ def tasks(request):
     }
 
     return render(request, 'main/tasks.html', data)
+
+def create(request):
+    return render(request, 'main/create.html')
