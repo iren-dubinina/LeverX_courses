@@ -54,8 +54,8 @@ ul.no-bullets {
     padding: 20px;
     border: 2px solid gray;
     border-radius: 20px;
+    box-shadow: 0.4em 0.4em 5px rgba(122,122,122,0.5);
 }
-
 
 .main-name{
     color: #50555E;
@@ -85,9 +85,12 @@ ul.no-bullets {
 }
 
 form{
+    padding: 40px;
     margin-left:32%;
     width:500px;
-    margin-top:50px;
 }
-
+.main-list {
+    height: 100vh; /* высота нашего блока */
+    overflow: auto; /* свойство для прокрутки по горизонтали. Автоматом, если больше блока */
+}
 

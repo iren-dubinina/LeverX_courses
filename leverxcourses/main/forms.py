@@ -1,0 +1,64 @@
+from .models import Course, Lecture, Task
+from django.forms import ModelForm, TextInput, DateInput, FileInput, Select, FileField, Textarea
+
+
+class CoursesForm(ModelForm):
+    class Meta:
+        model = Course
+        fields = ['name', 'date', 'group']
+
+        widgets = {
+            "name": TextInput(attrs={
+                'class': 'form-control',
+                'placeholder': 'Сourse name'
+            }),
+            "date": DateInput(attrs={
+                'class': 'form-control',
+                'placeholder': 'Start date'
+            }),
+            "group": TextInput(attrs={
+                'class': 'form-control',
+                'placeholder': 'Group name'
+            })
+        }
+
+
+class LectureForm(ModelForm):
+    class Meta:
+        model = Lecture
+        fields = ['name', 'slides', 'course']
+
+        widgets = {
+            "name": TextInput(attrs={
+                'class': 'form-control',
+                'placeholder': 'Lecture name'
+            }),
+            "slides": FileInput(attrs={
+                'type' : 'file'
+            }),
+            "course": Select(attrs={
+                'class': 'form-control',
+                'placeholder': 'Course'
+            })
+        }
+
+class TaskForm(ModelForm):
+    class Meta:
+        model = Task
+        fields = ['name', 'text', 'course']
+
+        widgets = {
+            "name": TextInput(attrs={
+                'class': 'form-control',
+                'placeholder': 'Task name'
+            }),
+            "text": Textarea(attrs={
+                'class': 'form-control',
+                'placeholder': 'Description'
+            }),
+            "course": Select(attrs={
+                'class': 'form-control',
+                'placeholder': 'Course'
+            })
+        }
+

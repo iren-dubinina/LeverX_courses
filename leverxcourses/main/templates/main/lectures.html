@@ -2,18 +2,32 @@
 
 {% load static %}
 
-{% block title %}{{ title }}{% endblock %}
-
-<!--{% block aside %}-->
-<!--    <img src="{% static 'main/img/img_LeverX.png' %}" alt="Logo">-->
-<!--    <span class="Logo">Lectures</span>-->
-<!--&lt;!&ndash;        <ul>&ndash;&gt;-->
-<!--&lt;!&ndash;            <a href="{% url lectures %}"><li><i class="fas fa-chalkboard-teacher"></i> Лекции </li></a>&ndash;&gt;-->
-<!--&lt;!&ndash;            <a href="{% url tasks %}"><li><i class="fas fa-tasks"></i> Задания </li></a>&ndash;&gt;-->
-<!--&lt;!&ndash;            <a href="{% url users %}"><li><i class="fas fa-book-reader"></i> Пользователи </li></a>&ndash;&gt;-->
-<!--&lt;!&ndash;        </ul>&ndash;&gt;-->
-<!--{% endblock %}-->
+{% block title %}{{ el.name }}{% endblock %}
 
 {% block content %}
-    <h1>{{ title }}</h1>
-{% endblock %}
+<div class="main-list">
+    <ul class="no-bullets">
+        {% if lectures %}
+        {% for el in lectures %}
+        <li>
+            <div class="main-block">
+                <button type="button" class="btn btn-info" data-toggle="collapse" data-target="#{{el.id}}">{{el.name}}
+                </button>
+                <div id="{{el.id}}" class="collapse" style="padding : 3em">
+                    {{el.slides}}
+                </div>
+            </div>
+        </li>
+        {% endfor %}
+        {% else %}
+        <p> No records </p>
+        {% endif %}
+        <li>
+            <div class="add-block">
+                <a href="{% url 'create_lecture' %}">
+                    <button class="btn btn-info"><i class="fas fa-plus-circle"></i>Add lecture</button>
+                </a>
+            </div>
+        </li>
+    </ul>
+    {% endblock %}

@@ -8,3 +8,20 @@ class Course(models.Model):
 
     def __str__(self):
         return self.name
+
+
+class Lecture(models.Model):
+    name = models.CharField('Name', max_length=20)
+    slides = models.FileField('Slides')
+    course = models.ForeignKey(Course, on_delete=models.CASCADE)
+
+    def __str__(self):
+        return self.name
+
+class Task(models.Model):
+    name = models.CharField('Name', max_length=20)
+    text = models.TextField('Text', max_length=250)
+    course = models.ForeignKey(Course, on_delete=models.CASCADE)
+
+    def __str__(self):
+        return self.name

@@ -6,14 +6,14 @@
 
 {% block content %}
 <div class="features">
-    <form method="post">
-        <h1>Add Course</h1>
+    <form method="post" enctype="multipart/form-data">
+        <h1>Add Lecture</h1>
         {% csrf_token %}
         {{ form.name}}<br>
-        {{ form.date}}<br>
-        {{ form.group}}<br>
+        {{ form.slides}}<br>
+        {{ form.course}}<br>
         <span>{{ error }}</span><br>
-        <button class="btn btn-success" type="submit">Add Course</button>
+        <button class="btn btn-success" type="submit">Add Lecture</button>
     </form>
 </div>
 {% endblock %}

@@ -5,12 +5,10 @@
 {% block title %}{{ title }}{% endblock %}
 
 {% block menu %}
-
-
 {% endblock %}
 
 {% block content %}
-<div>
+<div class="main-list">
     <ul class="no-bullets">
         {% if courses %}
         {% for el in courses %}
@@ -19,11 +17,12 @@
                 <img width='70px' height="70px" style="display: inline-block"
                      src="{% static 'main/img/python.jpg' %}">
                 <div style="display: inline-block; position:relative; left:20px; top:10px;">
-                    <a href="{% url 'course' %}" class="main-name"><h3>{{el.name}}</h3></a>
+                    <a href="{% url 'course_details' el.id %}" class="main-name"><h3>{{el.name}}</h3></a>
                     <div>
-                        <!--                        {% for le in el.lecturers %}-->
-                        <!--                        <span>{{ le }} *</span>-->
-                        <!--                        {% endfor%}-->
+                        <span>{{el.date}}</span>
+<!--                            {% for le in el.lecturers %}-->
+<!--                            <span>{{ le }} *</span>-->
+<!--                            {% endfor%}-->
                     </div>
                 </div>
             </div>
@@ -39,7 +38,6 @@
         {% else %}
         <p> No records </p>
         {% endif %}
-
     </ul>
 </div>
 {% endblock %}
