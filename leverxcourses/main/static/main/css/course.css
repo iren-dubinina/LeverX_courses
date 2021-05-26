@@ -21,7 +21,7 @@ aside img {
 
 aside .Logo {
     color: #686B6B;
-    font-size: 30px;
+    font-size: 20px;
     margin-left: 10px;
 }
 
@@ -32,7 +32,7 @@ aside ul {
 
 aside ul li {
     color: #0F3069;
-    font-size: 20px;
+    font-size: 18px;
     display: block;
     margin-top: 10px;
     transition: transform 0.05s ease;

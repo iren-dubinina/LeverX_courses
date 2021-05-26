@@ -9,6 +9,9 @@ class Course(models.Model):
     def __str__(self):
         return self.name
 
+    def get_absolute_url(self):
+        return f'/'
+
 
 class Lecture(models.Model):
     name = models.CharField('Name', max_length=20)
@@ -18,6 +21,10 @@ class Lecture(models.Model):
     def __str__(self):
         return self.name
 
+    def get_absolute_url(self):
+        return f'/'
+
+
 class Task(models.Model):
     name = models.CharField('Name', max_length=20)
     text = models.TextField('Text', max_length=250)
@@ -25,3 +32,6 @@ class Task(models.Model):
 
     def __str__(self):
         return self.name
+
+    def get_absolute_url(self):
+        return f'/'

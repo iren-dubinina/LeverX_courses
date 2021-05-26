@@ -2,7 +2,7 @@ from django.db.models import Q
 from django.shortcuts import render, redirect
 from .models import Course, Lecture, Task
 from .forms import CoursesForm, LectureForm, TaskForm
-from django.views.generic import DetailView, UpdateView, ListView
+from django.views.generic import DetailView, UpdateView, ListView, DeleteView
 
 
 class CourseDetailView(DetailView):
@@ -13,15 +13,44 @@ class CourseDetailView(DetailView):
 
 class CourseUpdateView(UpdateView):
     model = Course
-    template_name = 'main/course_details.html'
+    template_name = 'main/create.html'
+    form_class = CoursesForm
 
-    form_class = CourseDetailView
+
+class CourseDeleteView(DeleteView):
+    model = Course
+    success_url = 'main/index.html'
+    template_name = 'main/delete_course.html'
+
+
+class LectureUpdateView(UpdateView):
+    model = Lecture
+    template_name = 'main/create_lecture.html'
+    form_class = LectureForm
+
+
+class LectureDeleteView(DeleteView):
+    model = Lecture
+    success_url = 'main/index.html'
+    template_name = 'main/delete_lecture.html'
+
+
+class TaskUpdateView(UpdateView):
+    model = Task
+    template_name = 'main/create_task.html'
+    form_class = TaskForm
+
+
+class TaskDeleteView(DeleteView):
+    model = Task
+    success_url = 'main/index.html'
+    template_name = 'main/delete_task.html'
 
 
 class CourseLecturesView(ListView):
     model = Lecture
-    context_object_name = 'lectures'
-    template_name = 'main/lectures.html'
+    template_name = 'main/lectures.html'  # обработчик
+    context_object_name = 'lecture'  # ключ объекта, кот. передается в шаблон
 
     def get_context_data(self, **kwargs):
         context = super(CourseLecturesView, self).get_context_data(**kwargs)
@@ -31,8 +60,8 @@ class CourseLecturesView(ListView):
 
 class CourseTasksView(ListView):
     model = Task
-    context_object_name = 'tasks'
-    template_name = 'main/tasks.html'
+    template_name = 'main/tasks.html'  # обработчик
+    context_object_name = 'task'  # ключ для передачи в шаблон
 
     def get_context_data(self, **kwargs):
         context = super(CourseTasksView, self).get_context_data(**kwargs)
@@ -56,12 +85,6 @@ def lectures(request):
     lectures = Lecture.objects.all()
     print('lectures', lectures)
     return render(request, 'main/lectures.html', {'lectures': lectures})
-
-
-def lecture_details(request):
-    lectures = Lecture.objects.all()
-    print('lectures', lectures)
-    return render(request, 'main/lecture_details.html', {'lectures': lectures})
 
 
 def tasks(request):

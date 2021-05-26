@@ -14,9 +14,9 @@
         {% for el in courses %}
         <li>
             <div class="main-block">
-                <img width='70px' height="70px" style="display: inline-block"
+                <img width='70px' height="70px" style="display: inline-block; position:relative; top:-15px;"
                      src="{% static 'main/img/python.jpg' %}">
-                <div style="display: inline-block; position:relative; left:20px; top:10px;">
+                <div style="display: inline-block; position:relative; left:20px; top:5px;">
                     <a href="{% url 'course_details' el.id %}" class="main-name"><h3>{{el.name}}</h3></a>
                     <div>
                         <span>{{el.date}}</span>
@@ -25,6 +25,11 @@
 <!--                            {% endfor%}-->
                     </div>
                 </div>
+                <div style="margin: 5px; float: right; position:relative; top:20px;">
+                    <a href="{% url 'delete' el.id %}" class="btn btn-warning" >Delete course</a>
+                    <a href="{% url 'update' el.id %}" class="btn btn-info" >Update course</a>
+                </div>
+
             </div>
         </li>
         {% endfor %}

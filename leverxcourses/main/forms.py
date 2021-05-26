@@ -23,6 +23,7 @@ class CoursesForm(ModelForm):
         }
 
 
+
 class LectureForm(ModelForm):
     class Meta:
         model = Lecture

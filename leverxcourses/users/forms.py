@@ -4,7 +4,7 @@ from django.forms import ModelForm, TextInput, PasswordInput
 
 class RegistrationForm(ModelForm):
     class Meta:
-        model = User
+        # model = User
         fields = ['name', 'date', 'group']
 
         widgets = {

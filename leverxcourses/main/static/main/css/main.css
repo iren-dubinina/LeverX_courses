@@ -19,7 +19,7 @@ aside img {
 }
 
 aside .Logo {
-    font-size: 30px;
+    font-size: 18px;
     margin-left: 10px;
 }
 
@@ -30,7 +30,7 @@ aside ul {
 
 aside ul li {
     color: #0F3069;
-    font-size: 25px;
+    font-size: 18px;
     display: block;
     margin-top: 10px;
     transition: transform 0.1s ease;
@@ -49,9 +49,11 @@ ul.no-bullets {
 
 .main-block{
     float: left;
-    width: 70%;
-    margin: 20px;
-    padding: 20px;
+    width: 80%;
+    min-width: 800px;
+    min-height: 80px;
+    margin: 10px;
+    padding: 10px;
     border: 2px solid gray;
     border-radius: 20px;
     box-shadow: 0.4em 0.4em 5px rgba(122,122,122,0.5);
@@ -59,7 +61,7 @@ ul.no-bullets {
 
 .main-name{
     color: #50555E;
-    font-size: 25px;
+    font-size: 18px;
     display: block;
     margin-top: 10px;
     transition: transform 0.1s ease;
@@ -67,7 +69,7 @@ ul.no-bullets {
 
 .main-logo{
     color: #50555E;
-    font-size: 25px;
+    font-size: 20px;
     display: block;
     margin-top: 10px;
 }

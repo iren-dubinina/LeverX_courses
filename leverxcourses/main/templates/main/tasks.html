@@ -7,15 +7,21 @@
 {% block content %}
 
 <div class="main-list">
+    <h1>Tasks</h1>
     <ul class="no-bullets">
         {% if tasks %}
         {% for el in tasks %}
         <li>
             <div class="main-block">
-                <button type="button" class="btn btn-info" data-toggle="collapse" data-target="#{{el.id}}">{{el.name}}
+                <button style="margin: 5px; position:relative; top:10px;"
+                        type="button" class="btn btn-info" data-toggle="collapse" data-target="#{{el.id}}">{{el.name}}
                 </button>
                 <div id="{{el.id}}" class="collapse" style="padding : 3em">
                     {{el.text}}
+                </div>
+                <div style="margin: 5px; float: right; position:relative; top:10px;">
+                    <a href="{% url 'delete_task' el.id %}" class="btn btn-warning">Delete task</a>
+                    <a href="{% url 'update_task' el.id %}" class="btn btn-info">Update task</a>
                 </div>
             </div>
         </li>

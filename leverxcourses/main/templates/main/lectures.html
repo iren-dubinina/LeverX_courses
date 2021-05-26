@@ -6,15 +6,21 @@
 
 {% block content %}
 <div class="main-list">
+    <h1>Lectures</h1>
     <ul class="no-bullets">
         {% if lectures %}
         {% for el in lectures %}
         <li>
             <div class="main-block">
-                <button type="button" class="btn btn-info" data-toggle="collapse" data-target="#{{el.id}}">{{el.name}}
+                <button style="margin: 5px; position:relative; top:10px;"
+                        type="button" class="btn btn-info" data-toggle="collapse" data-target="#{{el.id}}">{{el.name}}
                 </button>
                 <div id="{{el.id}}" class="collapse" style="padding : 3em">
-                    {{el.slides}}
+                    <a href="temp.pdf" download="temp.pdf">{{ el.slides }}</a>
+                </div>
+                <div style="margin: 5px; float: right; position:relative; top:10px;">
+                    <a href="{% url 'delete_lecture' el.id %}" class="btn btn-warning">Delete lecture</a>
+                    <a href="{% url 'update_lecture' el.id %}" class="btn btn-info">Update lecture</a>
                 </div>
             </div>
         </li>

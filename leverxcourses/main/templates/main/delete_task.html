@@ -1,0 +1,16 @@
+{% extends 'main/layout.html' %}
+
+{% load static %}
+
+{% block title %}Delete course{% endblock %}
+
+{% block content %}
+<div class="features">
+    <form method="post">
+        <h1>Are you sure?</h1>
+        {% csrf_token %}
+        <span>{{ error }}</span><br>
+        <button class="btn btn-success" type="submit">Delete task</button>
+    </form>
+</div>
+{% endblock %}
