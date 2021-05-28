@@ -20,6 +20,9 @@
     <aside>
         <img style="width: 45%; display: inline-block" src="{% static 'main/img/img_LeverX.png' %}" alt="Logo">
         <p style="width: 40%; display: inline-block" class="main-logo">Courses</p>
+
+        <a href="{% url 'logout' %}"><button class="btn btn-info">Log Out</button></a>
+
         {% block menu %}
         {% endblock %}
     </aside>

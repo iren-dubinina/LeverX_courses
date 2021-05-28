@@ -29,10 +29,10 @@
                     <a href="{% url 'delete' el.id %}" class="btn btn-warning" >Delete course</a>
                     <a href="{% url 'update' el.id %}" class="btn btn-info" >Update course</a>
                 </div>
-
             </div>
         </li>
         {% endfor %}
+        {% if can_add %}
         <li>
             <div class="add-block">
                 <a href="{% url 'create' %}">
@@ -40,6 +40,7 @@
                 </a>
             </div>
         </li>
+        {% endif %}
         {% else %}
         <p> No records </p>
         {% endif %}

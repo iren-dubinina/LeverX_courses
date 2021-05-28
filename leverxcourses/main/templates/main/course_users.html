@@ -1,0 +1,42 @@
+{% extends 'main/layout.html' %}
+
+{% load static %}
+
+{% block title %}{{ title }}{% endblock %}
+
+{% block menu %}
+<span class="Logo">{{course.name}}</span>
+{% endblock %}
+
+{% block content %}
+<form method="post" enctype="multipart/form-data">
+    <h1>Add User</h1>
+    {% csrf_token %}
+    {{form.name}}
+    {{form.date}}
+    {{form.users}}<br>
+    <button class="btn btn-success" type="submit">Add User</button>
+</form>
+
+<div class="main-list">
+    <table class="table" style="width: 90%">
+        <tr>
+            <th scope="col">Username</th>
+            <th scope="col">Role</th>
+            <th scope="col">Delete</th>
+            <th scope="col">Update</th>
+        </tr>
+        {% if users %}
+        {% for el in users %}
+        <tr>
+            <td>{{el.username}}</td>
+            <td>{{el.userrole}}</td>
+            <td><a href="{% url 'delete' el.id %}">Delete user</a></td>
+            <td><a href="{% url 'update' el.id %}">Update user</a></td>
+        </tr>
+        {% endfor %}
+        {% endif %}
+    </table>
+</div>
+
+{% endblock %}
