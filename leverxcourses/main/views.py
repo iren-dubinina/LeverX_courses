@@ -31,6 +31,7 @@ User = get_user_model()
 # for per in pers:
 #     group.permissions.add(per)
 
+#TODO move groups permissions to another file
 class CourseDetailView(DetailView):
     model = Course
     template_name = 'main/course_details.html'
