@@ -11,27 +11,6 @@ from django.views.generic import DetailView, UpdateView, ListView, DeleteView
 User = get_user_model()
 
 
-# content_type = ContentType.objects.get(app_label='main', model='Course')
-# permission = Permission.objects.create(codename='can_add',
-#                                        name='Can Publish Posts',
-#                                        content_type=content_type)
-# group = Group.objects.get(name='lecturer')
-# group.permissions.add(permission)
-
-# pers = Permission.objects.filter(codename__contains='user')
-# group = Group.objects.get(name='lecturer')
-# group.permissions.add(per)
-
-# per = Permission.objects.filter(codename__contains='course')
-# group = Group.objects.get(name='lecturer')
-# group.permissions.add(per)
-
-# pers = Permission.objects.filter(codename__contains='lecture')
-# group = Group.objects.get(name='lecturer')
-# for per in pers:
-#     group.permissions.add(per)
-
-#TODO move groups permissions to another file
 class CourseDetailView(DetailView):
     model = Course
     template_name = 'main/course_details.html'
