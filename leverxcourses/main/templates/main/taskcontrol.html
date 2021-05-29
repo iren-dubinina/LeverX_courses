@@ -16,12 +16,12 @@
             <th scope="col">Attachment</th>
             <th scope="col">Completed</th>
             <th scope="col">Grade</th>
-            <!--            {% if perms.auth.delete_user %}-->
-            <!--                <th scope="col" style="width: 60px">Delete</th>-->
-            <!--            {% endif %}-->
-            <!--            {% if perms.auth.change_user %}-->
-            <!--                <th scope="col" style="width: 60px">Update</th>-->
-            <!--            {% endif %}-->
+            {% if perms.main.delete_taskcontrol %}
+            <th scope="col" style="width: 60px">Delete</th>
+            {% endif %}
+            {% if perms.main.update_taskcontrol %}
+            <th scope="col" style="width: 60px">Update</th>
+            {% endif %}
         </tr>
         {% if taskcontrols %}
         {% for el in taskcontrols %}
@@ -29,13 +29,13 @@
             <td>{{el.datetime}}</td>
             <td>{{el.attachment}}</td>
             <td>{{el.completed}}</td>
-            <!--            <td>{{el.userrole}}</td>-->
-            <!--            {% if perms.auth.delete_user %}-->
-            <!--            <td><a href="{% url 'delete' el.id %}">Delete</a></td>-->
-            <!--            {% endif %}-->
-            <!--            {% if perms.auth.change_user %}-->
-            <!--            <td><a href="{% url 'update' el.id %}">Update</a></td>-->
-            <!--            {% endif %}-->
+            <td>{{el.grade}}</td>
+            {% if perms.main.delete_taskcontrol %}
+            <td><a href="{% url 'delete_taskcontrol' el.id %}">Delete</a></td>
+            {% endif %}
+            {% if perms.main.update_taskcontrol %}
+            <td><a href="{% url 'update_taskcontrol' el.id %}">Update</a></td>
+            {% endif %}
         </tr>
         {% endfor %}
         {% endif %}

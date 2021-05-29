@@ -1,0 +1,20 @@
+{% extends 'main/layout.html' %}
+
+{% load static %}
+
+{% block title %}Add homework{% endblock %}
+
+{% block content %}
+<div class="main-list">
+    <form method="post">
+        <h1>Update homework</h1>
+        {% csrf_token %}
+        {{ form.attachment}}<br>
+        {{form.checked }}<br>
+        {{ form.grade }}<br>
+        {{form.comments}}<br>
+        <span>{{ error }}</span><br>
+        <button class="btn btn-success" type="submit">Update homework</button>
+    </form>
+</div>
+{% endblock %}

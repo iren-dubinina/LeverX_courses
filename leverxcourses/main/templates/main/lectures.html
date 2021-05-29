@@ -16,7 +16,7 @@
                         type="button" class="btn btn-info" data-toggle="collapse" data-target="#{{el.id}}">{{el.name}}
                 </button>
                 <div id="{{el.id}}" class="collapse" style="padding : 3em">
-                    <a href="temp.pdf" download="temp.pdf">{{ el.slides }}</a>
+                    <a href="{{el.slides}}" download="{{el.slides}}">{{ el.slides }}</a>
                 </div>
                 <div style="margin: 5px; float: right; position:relative; top:10px;">
                     <a href="{% url 'tasks' el.id %}" class="btn btn-info">Tasks</a>
@@ -36,7 +36,7 @@
         {% if perms.main.add_lecture %}
             <li>
                 <div class="add-block">
-                    <a href="{% url 'create_lecture' %}">
+                    <a href="{% url 'create_lecture' course_id %}">
                         <button class="btn btn-info"><i class="fas fa-plus-circle"></i>Add lecture</button>
                     </a>
                 </div>

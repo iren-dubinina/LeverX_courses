@@ -11,6 +11,33 @@ from django.views.generic import DetailView, UpdateView, ListView, DeleteView
 User = get_user_model()
 
 
+# content_type = ContentType.objects.get(app_label='main', model='Course')
+# permission = Permission.objects.create(codename='can_add',
+#                                        name='Can Publish Posts',
+#                                        content_type=content_type)
+# group = Group.objects.get(name='lecturer')
+# group.permissions.add(permission)
+
+# pers = Permission.objects.filter(codename__contains='user')
+# group = Group.objects.get(name='lecturer')
+# group.permissions.add(per)
+
+# per = Permission.objects.filter(codename__contains='course')
+# group = Group.objects.get(name='lecturer')
+# group.permissions.add(per)
+
+# pers = Permission.objects.filter(codename__contains='lecture')
+# group = Group.objects.get(name='lecturer')
+# for per in pers:
+#     group.permissions.add(per)
+
+# pers = Permission.objects.filter(codename__contains='task')
+# group = Group.objects.get(name='lecturer')
+# for per in pers:
+#     group.permissions.add(per)
+
+
+# TODO move groups permissions to another file
 class CourseDetailView(DetailView):
     model = Course
     template_name = 'main/course_details.html'
@@ -25,8 +52,20 @@ class CourseUpdateView(UpdateView):
 
 class CourseDeleteView(DeleteView):
     model = Course
-    success_url = 'main/index.html'
+    success_url = '/'
     template_name = 'main/delete_course.html'
+
+
+class TaskcontrolDeleteView(DeleteView):
+    model = Course
+    success_url = '/'
+    template_name = 'main/delete_course.html'
+
+
+class TaskcontrolUpdateView(UpdateView):
+    model = TaskControl
+    template_name = 'main/create_lecture.html'
+    form_class = TaskControlForm
 
 
 class LectureUpdateView(UpdateView):
@@ -37,7 +76,7 @@ class LectureUpdateView(UpdateView):
 
 class LectureDeleteView(DeleteView):
     model = Lecture
-    success_url = 'main/index.html'
+    success_url = '/'
     template_name = 'main/delete_lecture.html'
 
 
@@ -49,7 +88,7 @@ class LectureTaskUpdateView(UpdateView):
 
 class LectureTaskDeleteView(DeleteView):
     model = LectureTask
-    success_url = 'main/index.html'
+    success_url = '/'
     template_name = 'main/delete_task.html'
 
 
@@ -61,6 +100,7 @@ class CourseLecturesView(ListView):
     def get_context_data(self, **kwargs):
         context = super(CourseLecturesView, self).get_context_data(**kwargs)
         context['lectures'] = Lecture.objects.filter(course=self.kwargs.get('pk'))
+        context['course_id'] = self.kwargs.get('pk')
         return context
 
 
@@ -83,7 +123,8 @@ class LectureTasksControlView(ListView):
 
     def get_context_data(self, **kwargs):
         context = super(LectureTasksControlView, self).get_context_data(**kwargs)
-        context['taskscontrols'] = TaskControl.objects.filter(task=self.kwargs.get('pk'))
+        user_id = self.request.user.id
+        context['taskscontrols'] = TaskControl.objects.filter(task=self.kwargs.get('pk')).filter(users__id=user_id)
         context['task_id'] = self.kwargs.get('pk')
         # context['users'] = self.kwargs.get('pk')
         return context
@@ -227,7 +268,8 @@ def add_taskcontrol(request, pk):
         form = TaskControlForm(request.POST, request.FILES)
         print(form)
         if form.is_valid():
-            form.save()
+            taskcontrol = form.save()
+            taskcontrol.users.add(request.user)
             return redirect('taskcontrol', pk)
         else:
             error = 'Form is not valid'
