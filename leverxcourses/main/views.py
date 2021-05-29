@@ -1,11 +1,14 @@
+from django.contrib.auth import get_user_model
 from django.contrib.auth.decorators import permission_required, login_required
 from django.contrib.auth.models import User, Permission, Group
 from django.contrib.contenttypes.models import ContentType
 from django.db.models import Q
 from django.shortcuts import render, redirect
-from .models import Course, Lecture, Task
+from .models import Course, Lecture, Task, LectureTask
 from .forms import CoursesForm, LectureForm, TaskForm, AddUserForm
 from django.views.generic import DetailView, UpdateView, ListView, DeleteView
+
+User = get_user_model()
 
 
 # content_type = ContentType.objects.get(app_label='main', model='Course')
@@ -69,12 +72,13 @@ class CourseLecturesView(ListView):
 
 class CourseTasksView(ListView):
     model = Task
-    template_name = 'main/tasks.html'  # обработчик
-    context_object_name = 'task'  # ключ для передачи в шаблон
+    template_name = 'main/tasks.html'
+    context_object_name = 'task'
 
     def get_context_data(self, **kwargs):
         context = super(CourseTasksView, self).get_context_data(**kwargs)
-        context['tasks'] = Task.objects.filter(course=self.kwargs.get('pk'))
+        context['tasks'] = LectureTask.objects.filter(lecture=self.kwargs.get('pk'))
+        context['lecture'] = self.kwargs.get('pk')
         return context
 
 
@@ -85,7 +89,7 @@ def getCourseById(pk):
 
 
 def getUsersByCourse(pk):
-    users = User.objects.all().select_related().filter(course__id=pk).values('username')
+    users = User.objects.filter(course__id=pk)
     print(users)
     return users
 
@@ -94,22 +98,22 @@ def getUsersByCourse(pk):
 def course_users(request, pk):
     if request.method == 'POST':
         form = AddUserForm(request.POST)
-        print(form)
         if form.is_valid():
-            form.save()
+            course = Course.objects.get(id=pk)
+            for user in form.cleaned_data['users']:
+                course.users.add(user)
             return redirect('course_users', pk)
     form = AddUserForm(initial=getCourseById(pk))
-    # course = getCourseById(pk)
+    course = getCourseById(pk)
     users = getUsersByCourse(pk)
-    users = []
-    return render(request, 'main/course_users.html', {'form': form, 'course': course})
+    return render(request, 'main/course_users.html', {'form': form, 'course': course, 'users': users})
 
 
 @login_required(login_url='/users/login')
 def index(request):
     courses = []
     courses = Course.objects.all()
-    return render(request, 'main/index.html', {'courses': courses, 'can_add': request.user.has_perm('main.can_add')})
+    return render(request, 'main/index.html', {'courses': courses})
 
 
 @login_required(login_url='/users/login')
@@ -136,6 +140,7 @@ def tasks(request):
 
 
 @login_required(login_url='/users/login')
+@permission_required('main.add_course')
 def create(request):
     error = ''
     if request.method == 'POST':
@@ -177,18 +182,17 @@ def create_lecture(request):
 
 
 @login_required(login_url='/users/login')
-def create_task(request):
+def create_task(request, pk):
     error = ''
     if request.method == 'POST':
-        print(request.FILES)
         form = TaskForm(request.POST)
         if form.is_valid():
             form.save()
-            return redirect('home')
+            return redirect('tasks', pk)
         else:
             error = 'Form is not valid'
 
-    form = TaskForm()
+    form = TaskForm(initial={'lecture' :  Lecture.objects.get(id=pk)})
     data = {
         'form': form,
         'error': error

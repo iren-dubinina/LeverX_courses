@@ -20,19 +20,24 @@
                     <a href="{% url 'course_details' el.id %}" class="main-name"><h3>{{el.name}}</h3></a>
                     <div>
                         <span>{{el.date}}</span>
-<!--                            {% for le in el.lecturers %}-->
-<!--                            <span>{{ le }} *</span>-->
-<!--                            {% endfor%}-->
+                        <!--                            {% for le in el.lecturers %}-->
+                        <!--                            <span>{{ le }} *</span>-->
+                        <!--                            {% endfor%}-->
                     </div>
                 </div>
                 <div style="margin: 5px; float: right; position:relative; top:20px;">
-                    <a href="{% url 'delete' el.id %}" class="btn btn-warning" >Delete course</a>
-                    <a href="{% url 'update' el.id %}" class="btn btn-info" >Update course</a>
+                    {% if perms.main.delete_course %}
+                    <a href="{% url 'delete' el.id %}" class="btn btn-warning">Delete course</a>
+                    {% endif %}
+
+                    {% if perms.main.change_course %}
+                    <a href="{% url 'update' el.id %}" class="btn btn-info">Update course</a>
+                    {% endif %}
                 </div>
             </div>
         </li>
         {% endfor %}
-        {% if can_add %}
+        {% if perms.main.add_course %}
         <li>
             <div class="add-block">
                 <a href="{% url 'create' %}">

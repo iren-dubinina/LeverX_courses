@@ -17,20 +17,23 @@
     <title>{% block title %}{% endblock%}</title>
 </head>
 <body>
-    <aside>
-        <img style="width: 45%; display: inline-block" src="{% static 'main/img/img_LeverX.png' %}" alt="Logo">
-        <p style="width: 40%; display: inline-block" class="main-logo">Courses</p>
+<aside>
+    <a href="{% url 'home' %}"><img style="width: 45%; display: inline-block"
+                                    src="{% static 'main/img/img_LeverX.png' %}" alt="Logo">
+        <p style="width: 40%; display: inline-block" class="main-logo">Courses</p></a>
 
-        <a href="{% url 'logout' %}"><button class="btn btn-info">Log Out</button></a>
+    <a style="position: absolute; height: 10px;  bottom: 100px; left: 5%" href="{% url 'logout' %}">
+        <button class="btn btn-info">Log Out</button>
+    </a>
 
-        {% block menu %}
-        {% endblock %}
-    </aside>
+    {% block menu %}
+    {% endblock %}
+</aside>
 
-    <main>
-        {% block content %}
-        {% endblock %}
-    </main>
+<main>
+    {% block content %}
+    {% endblock %}
+</main>
 
 </body>
 </html>

@@ -1,7 +1,8 @@
 from django.contrib.auth.models import User
 
-from .models import Course, Lecture, Task
-from django.forms import ModelForm, TextInput, DateInput, FileInput, Select, Textarea, CheckboxSelectMultiple
+from .models import Course, Lecture, Task, LectureTask
+from django.forms import ModelForm, TextInput, DateInput, FileInput, Select, Textarea, CheckboxSelectMultiple, \
+    SelectMultiple
 
 
 class CoursesForm(ModelForm):
@@ -47,8 +48,8 @@ class LectureForm(ModelForm):
 
 class TaskForm(ModelForm):
     class Meta:
-        model = Task
-        fields = ['name', 'text', 'course']
+        model = LectureTask
+        fields = ['name', 'text', 'lecture']
 
         widgets = {
             "name": TextInput(attrs={
@@ -59,7 +60,7 @@ class TaskForm(ModelForm):
                 'class': 'form-control',
                 'placeholder': 'Description'
             }),
-            "course": Select(attrs={
+            "lecture": Select(attrs={
                 'class': 'form-control',
                 'placeholder': 'Course'
             })
@@ -84,5 +85,5 @@ class AddUserForm(ModelForm):
                 'class': 'form-control',
                 'placeholder': 'Start date'
             }),
-            "users": CheckboxSelectMultiple()
+            "users": SelectMultiple()
         }

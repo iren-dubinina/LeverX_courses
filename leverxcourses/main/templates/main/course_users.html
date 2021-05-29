@@ -9,7 +9,9 @@
 {% endblock %}
 
 {% block content %}
-<form method="post" enctype="multipart/form-data">
+
+<div class="main-list">
+    <form method="post" enctype="multipart/form-data">
     <h1>Add User</h1>
     {% csrf_token %}
     {{form.name}}
@@ -17,8 +19,6 @@
     {{form.users}}<br>
     <button class="btn btn-success" type="submit">Add User</button>
 </form>
-
-<div class="main-list">
     <table class="table" style="width: 90%">
         <tr>
             <th scope="col">Username</th>
@@ -38,5 +38,4 @@
         {% endif %}
     </table>
 </div>
-
 {% endblock %}

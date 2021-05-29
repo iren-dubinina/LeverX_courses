@@ -37,3 +37,15 @@ class Task(models.Model):
 
     def get_absolute_url(self):
         return f'/'
+
+
+class LectureTask(models.Model):
+    name = models.CharField('Name', max_length=20)
+    text = models.TextField('Text', max_length=250)
+    lecture = models.ForeignKey(Lecture, on_delete=models.CASCADE)
+
+    def __str__(self):
+        return self.name
+
+    def get_absolute_url(self):
+        return f'/'
