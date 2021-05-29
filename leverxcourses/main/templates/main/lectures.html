@@ -19,9 +19,13 @@
                     <a href="temp.pdf" download="temp.pdf">{{ el.slides }}</a>
                 </div>
                 <div style="margin: 5px; float: right; position:relative; top:10px;">
-                    <a href="{% url 'tasks' el.id %}" class="btn btn-warning">Tasks</a>
-                    <a href="{% url 'delete_lecture' el.id %}" class="btn btn-warning">Delete lecture</a>
-                    <a href="{% url 'update_lecture' el.id %}" class="btn btn-info">Update lecture</a>
+                    <a href="{% url 'tasks' el.id %}" class="btn btn-info">Tasks</a>
+                    {% if perms.main.delete_lecture %}
+                        <a href="{% url 'delete_lecture' el.id %}" class="btn btn-warning">Delete lecture</a>
+                    {% endif%}
+                    {% if perms.main.change_lecture %}
+                        <a href="{% url 'update_lecture' el.id %}" class="btn btn-info">Update lecture</a>
+                    {% endif%}
                 </div>
             </div>
         </li>
@@ -29,12 +33,14 @@
         {% else %}
         <p> No records </p>
         {% endif %}
-        <li>
-            <div class="add-block">
-                <a href="{% url 'create_lecture' %}">
-                    <button class="btn btn-info"><i class="fas fa-plus-circle"></i>Add lecture</button>
-                </a>
-            </div>
-        </li>
+        {% if perms.main.add_lecture %}
+            <li>
+                <div class="add-block">
+                    <a href="{% url 'create_lecture' %}">
+                        <button class="btn btn-info"><i class="fas fa-plus-circle"></i>Add lecture</button>
+                    </a>
+                </div>
+            </li>
+       {% endif%}
     </ul>
     {% endblock %}

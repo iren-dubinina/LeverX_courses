@@ -1,11 +1,17 @@
 from django.contrib.auth.models import User
 from django.db import models
+from datetime import datetime
+
+
+class CourseGroup(models.Model):
+    name = models.CharField('Name', max_length=20)
+    image = models.ImageField('Image', max_length=20)
 
 
 class Course(models.Model):
     name = models.CharField('Name', max_length=20)
     date = models.DateField('Date start')
-    group = models.CharField('Group', max_length=1)
+    group = models.ForeignKey(CourseGroup, on_delete=models.PROTECT)
     users = models.ManyToManyField(User)
 
     def __str__(self):
@@ -27,10 +33,10 @@ class Lecture(models.Model):
         return f'/'
 
 
-class Task(models.Model):
+class LectureTask(models.Model):
     name = models.CharField('Name', max_length=20)
     text = models.TextField('Text', max_length=250)
-    course = models.ForeignKey(Course, on_delete=models.CASCADE)
+    lecture = models.ForeignKey(Lecture, on_delete=models.CASCADE)
 
     def __str__(self):
         return self.name
@@ -39,13 +45,29 @@ class Task(models.Model):
         return f'/'
 
 
-class LectureTask(models.Model):
-    name = models.CharField('Name', max_length=20)
-    text = models.TextField('Text', max_length=250)
-    lecture = models.ForeignKey(Lecture, on_delete=models.CASCADE)
+class TaskControl(models.Model):
+    datetime = models.DateTimeField('DateTime', default=datetime.now())
+    attachment = models.TextField('Homework')
+    completed = models.BooleanField('Completed', default=False)
+    checked = models.BooleanField('Checked', default=False)
+    grade = models.SmallIntegerField('Grade', default=0)
+    task = models.ForeignKey(LectureTask, on_delete=models.PROTECT)
+    users = models.ManyToManyField(User)
 
     def __str__(self):
-        return self.name
+        return self.task
+
+    def get_absolute_url(self):
+        return f'/'
+
+
+class TaskComments(models.Model):
+    comment = models.TextField('Comment', max_length=250)
+    datetime = models.DateTimeField('DateTime', default=datetime.now())
+    taskcontrol = models.ForeignKey(TaskControl, on_delete=models.PROTECT)
+
+    def __str__(self):
+        return self.datetime
 
     def get_absolute_url(self):
         return f'/'

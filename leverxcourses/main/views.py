@@ -4,8 +4,8 @@ from django.contrib.auth.models import User, Permission, Group
 from django.contrib.contenttypes.models import ContentType
 from django.db.models import Q
 from django.shortcuts import render, redirect
-from .models import Course, Lecture, Task, LectureTask
-from .forms import CoursesForm, LectureForm, TaskForm, AddUserForm
+from .models import Course, Lecture, LectureTask, TaskControl
+from .forms import CoursesForm, LectureForm, TaskForm, AddUserForm, CourseGroup, TaskControlForm
 from django.views.generic import DetailView, UpdateView, ListView, DeleteView
 
 User = get_user_model()
@@ -17,6 +17,20 @@ User = get_user_model()
 #                                        content_type=content_type)
 # group = Group.objects.get(name='lecturer')
 # group.permissions.add(permission)
+
+# pers = Permission.objects.filter(codename__contains='user')
+# group = Group.objects.get(name='lecturer')
+# group.permissions.add(per)
+
+# per = Permission.objects.filter(codename__contains='course')
+# group = Group.objects.get(name='lecturer')
+# group.permissions.add(per)
+
+# pers = Permission.objects.filter(codename__contains='lecture')
+# group = Group.objects.get(name='lecturer')
+# for per in pers:
+#     group.permissions.add(per)
+
 class CourseDetailView(DetailView):
     model = Course
     template_name = 'main/course_details.html'
@@ -47,14 +61,14 @@ class LectureDeleteView(DeleteView):
     template_name = 'main/delete_lecture.html'
 
 
-class TaskUpdateView(UpdateView):
-    model = Task
+class LectureTaskUpdateView(UpdateView):
+    model = LectureTask
     template_name = 'main/create_task.html'
     form_class = TaskForm
 
 
-class TaskDeleteView(DeleteView):
-    model = Task
+class LectureTaskDeleteView(DeleteView):
+    model = LectureTask
     success_url = 'main/index.html'
     template_name = 'main/delete_task.html'
 
@@ -71,7 +85,7 @@ class CourseLecturesView(ListView):
 
 
 class CourseTasksView(ListView):
-    model = Task
+    model = LectureTask
     template_name = 'main/tasks.html'
     context_object_name = 'task'
 
@@ -79,6 +93,19 @@ class CourseTasksView(ListView):
         context = super(CourseTasksView, self).get_context_data(**kwargs)
         context['tasks'] = LectureTask.objects.filter(lecture=self.kwargs.get('pk'))
         context['lecture'] = self.kwargs.get('pk')
+        return context
+
+
+class LectureTasksControlView(ListView):
+    model = TaskControl
+    template_name = 'main/taskcontrol.html'
+    context_object_name = 'taskcontrol'
+
+    def get_context_data(self, **kwargs):
+        context = super(LectureTasksControlView, self).get_context_data(**kwargs)
+        context['taskscontrols'] = TaskControl.objects.filter(task=self.kwargs.get('pk'))
+        context['task_id'] = self.kwargs.get('pk')
+        # context['users'] = self.kwargs.get('pk')
         return context
 
 
@@ -112,7 +139,7 @@ def course_users(request, pk):
 @login_required(login_url='/users/login')
 def index(request):
     courses = []
-    courses = Course.objects.all()
+    courses = Course.objects.filter(users__id=request.user.id)
     return render(request, 'main/index.html', {'courses': courses})
 
 
@@ -125,14 +152,7 @@ def course(request):
 
 
 @login_required(login_url='/users/login')
-def lectures(request):
-    lectures = Lecture.objects.all()
-    print('lectures', lectures)
-    return render(request, 'main/lectures.html', {'lectures': lectures})
-
-
-@login_required(login_url='/users/login')
-def tasks(request):
+def LectureTasks(request):
     data = {
         'title': 'Tasks'
     }
@@ -145,14 +165,14 @@ def create(request):
     error = ''
     if request.method == 'POST':
         form = CoursesForm(request.POST)
-        print(form)
         if form.is_valid():
-            form.save()
+            course = form.save()
+            course.users.add(request.user)
             return redirect('home')
         else:
             error = 'Form is not valid'
 
-    form = CoursesForm()
+    form = CoursesForm(initial={'users': User.objects.filter(id=request.user.id)})
     data = {
         'form': form,
         'error': error
@@ -192,9 +212,49 @@ def create_task(request, pk):
         else:
             error = 'Form is not valid'
 
-    form = TaskForm(initial={'lecture' :  Lecture.objects.get(id=pk)})
+    form = TaskForm(initial={'lecture': Lecture.objects.get(id=pk)})
     data = {
         'form': form,
         'error': error
     }
     return render(request, 'main/create_task.html', data)
+
+
+@login_required(login_url='/users/login')
+def add_group(request):
+    error = ''
+    if request.method == 'POST':
+        form = CourseGroup(request.POST, request.FILES)
+        print(request.FILES)
+        print(form)
+        if form.is_valid():
+            form.save()
+            return redirect('home')
+        else:
+            error = 'Form is not valid'
+
+    form = CourseGroup()
+    data = {
+        'form': form,
+        'error': error
+    }
+    return render(request, 'main/add_group.html', data)
+
+
+def add_taskcontrol(request, pk):
+    error = ''
+    if request.method == 'POST':
+        form = TaskControlForm(request.POST, request.FILES)
+        print(form)
+        if form.is_valid():
+            form.save()
+            return redirect('taskcontrol', pk)
+        else:
+            error = 'Form is not valid'
+
+    form = TaskControlForm(initial={'task': LectureTask.objects.get(id=pk)})
+    data = {
+        'form': form,
+        'error': error
+    }
+    return render(request, 'main/add_taskcontrol.html', data)

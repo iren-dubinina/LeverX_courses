@@ -1,0 +1,47 @@
+{% extends 'main/layout.html' %}
+
+{% load static %}
+
+{% block title %}{{ title }}{% endblock %}
+
+{% block menu %}
+<span class="Logo">{{course.name}}</span>
+{% endblock %}
+
+{% block content %}
+<div class="main-list">
+    <table class="table" style="width: 65%">
+        <tr>
+            <th scope="col">Date</th>
+            <th scope="col">Attachment</th>
+            <th scope="col">Completed</th>
+            <th scope="col">Grade</th>
+            <!--            {% if perms.auth.delete_user %}-->
+            <!--                <th scope="col" style="width: 60px">Delete</th>-->
+            <!--            {% endif %}-->
+            <!--            {% if perms.auth.change_user %}-->
+            <!--                <th scope="col" style="width: 60px">Update</th>-->
+            <!--            {% endif %}-->
+        </tr>
+        {% if taskcontrols %}
+        {% for el in taskcontrols %}
+        <tr>
+            <td>{{el.datetime}}</td>
+            <td>{{el.attachment}}</td>
+            <td>{{el.completed}}</td>
+            <!--            <td>{{el.userrole}}</td>-->
+            <!--            {% if perms.auth.delete_user %}-->
+            <!--            <td><a href="{% url 'delete' el.id %}">Delete</a></td>-->
+            <!--            {% endif %}-->
+            <!--            {% if perms.auth.change_user %}-->
+            <!--            <td><a href="{% url 'update' el.id %}">Update</a></td>-->
+            <!--            {% endif %}-->
+        </tr>
+        {% endfor %}
+        {% endif %}
+    </table>
+    <a href="{% url 'add_taskcontrol' task_id%}">
+        <button class="btn btn-info">Add Home Task</button>
+    </a>
+</div>
+{% endblock %}

@@ -9,30 +9,38 @@
 {% endblock %}
 
 {% block content %}
-
-<div class="main-list">
-    <form method="post" enctype="multipart/form-data">
-    <h1>Add User</h1>
-    {% csrf_token %}
-    {{form.name}}
-    {{form.date}}
-    {{form.users}}<br>
-    <button class="btn btn-success" type="submit">Add User</button>
-</form>
-    <table class="table" style="width: 90%">
+<div class="main-list" >
+    {% if perms.auth.add_user %}
+        <form method="post" enctype="multipart/form-data">
+        {% csrf_token %}
+        {{form.name}}<br>
+        {{form.date}}<br>
+        {{form.users}}<br>
+        <button class="btn btn-success" type="submit">Add User</button><br>
+        </form>
+    {% endif %}
+    <table class="table" style="width: 65%">
         <tr>
-            <th scope="col">Username</th>
-            <th scope="col">Role</th>
-            <th scope="col">Delete</th>
-            <th scope="col">Update</th>
+            <th scope="col">Users</th>
+<!--            <th scope="col" style="width: 60px">Role</th>-->
+            {% if perms.auth.delete_user %}
+                <th scope="col" style="width: 60px">Delete</th>
+            {% endif %}
+            {% if perms.auth.change_user %}
+                <th scope="col" style="width: 60px">Update</th>
+            {% endif %}
         </tr>
         {% if users %}
         {% for el in users %}
         <tr>
             <td>{{el.username}}</td>
-            <td>{{el.userrole}}</td>
-            <td><a href="{% url 'delete' el.id %}">Delete user</a></td>
-            <td><a href="{% url 'update' el.id %}">Update user</a></td>
+<!--            <td>{{el.userrole}}</td>-->
+            {% if perms.auth.delete_user %}
+                <td><a href="{% url 'delete' el.id %}">Delete</a></td>
+            {% endif %}
+            {% if perms.auth.change_user %}
+                <td><a href="{% url 'update' el.id %}">Update</a></td>
+            {% endif %}
         </tr>
         {% endfor %}
         {% endif %}

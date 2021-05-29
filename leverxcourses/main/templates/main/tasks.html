@@ -20,6 +20,7 @@
                     {{el.text}}
                 </div>
                 <div style="margin: 5px; float: right; position:relative; top:10px;">
+                    <a href="{% url 'taskcontrol' el.id %}" class="btn btn-info">Home Tasks</a>
                     <a href="{% url 'delete_task' el.id %}" class="btn btn-warning">Delete task</a>
                     <a href="{% url 'update_task' el.id %}" class="btn btn-info">Update task</a>
                 </div>

@@ -25,15 +25,17 @@
                         <!--                            {% endfor%}-->
                     </div>
                 </div>
-                <div style="margin: 5px; float: right; position:relative; top:20px;">
-                    {% if perms.main.delete_course %}
-                    <a href="{% url 'delete' el.id %}" class="btn btn-warning">Delete course</a>
-                    {% endif %}
+                {% if perms.main.add_course %}
+                    <div style="margin: 5px; float: right; position:relative; top:20px;">
+                        {% if perms.main.delete_course %}
+                        <a href="{% url 'delete' el.id %}" class="btn btn-warning">Delete course</a>
+                        {% endif %}
 
-                    {% if perms.main.change_course %}
-                    <a href="{% url 'update' el.id %}" class="btn btn-info">Update course</a>
-                    {% endif %}
-                </div>
+                        {% if perms.main.change_course %}
+                        <a href="{% url 'update' el.id %}" class="btn btn-info">Update course</a>
+                        {% endif %}
+                    </div>
+                {% endif %}
             </div>
         </li>
         {% endfor %}

@@ -18,7 +18,10 @@ urlpatterns = [
     path('<int:pk>/delete', views.CourseDeleteView.as_view(), name='delete'),
     path('<int:pk>/update_lecture', views.LectureUpdateView.as_view(), name='update_lecture'),
     path('<int:pk>/delete_lecture', permission_required( views.LectureDeleteView.as_view(), 'main.delete_course'), name='delete_lecture'),
-    path('<int:pk>/update_task', views.TaskUpdateView.as_view(), name='update_task'),
-    path('<int:pk>/delete_task', views.TaskDeleteView.as_view(), name='delete_task'),
-    path('<int:pk>/course_users', views.course_users, name='course_users')
+    path('<int:pk>/update_task', views.LectureTaskUpdateView.as_view(), name='update_task'),
+    path('<int:pk>/delete_task', views.LectureTaskDeleteView.as_view(), name='delete_task'),
+    path('<int:pk>/course_users', views.course_users, name='course_users'),
+    path('add_group', views.add_group, name='add_group'),
+    path('<int:pk>/taskcontrol', views.LectureTasksControlView.as_view(), name='taskcontrol'),
+    path('<int:pk>/add_taskcontrol', views.add_taskcontrol, name='add_taskcontrol')
 ]
