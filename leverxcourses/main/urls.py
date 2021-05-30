@@ -11,10 +11,15 @@ router = routers.DefaultRouter()
 urlpatterns = [
     path('courses/', views.CourseList.as_view()),
     path('courses/<int:pk>/', views.CourseDetail.as_view()),
+    url(r'courses/update-partial/(?P<pk>\d+)/(?P<user>\d+)$', views.add_user_in_course),
     path('lectures/', views.LectureList.as_view()),
     path('lectures/<int:pk>/', views.LectureDetail.as_view()),
     path('tasks/', views.TaskList.as_view()),
     path('tasks/<int:pk>/', views.TaskDetail.as_view()),
+    path('taskcontrol/', views.TaskControlList.as_view()),
+    path('taskcontrol/<int:pk>/', views.TaskControlDetail.as_view()),
+    path('taskcomments/', views.TaskCommentsList.as_view()),
+    path('taskcomments/<int:pk>/', views.TaskCommentsDetail.as_view()),
     path('main', get_schema_view(
         title="Your Project",
         description="API for all things …",

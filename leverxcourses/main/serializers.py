@@ -78,27 +78,40 @@ class TaskSerializer(serializers.Serializer):
 class TaskControlSerializer(serializers.Serializer):
     datetime = serializers.DateTimeField('DateTime', required=False)
     attachment = serializers.CharField()
-    completed = serializers.BooleanField('Completed', default=False)
     checked = serializers.BooleanField('Checked', default=False)
     grade = serializers.IntegerField(required=False)
     task = serializers.PrimaryKeyRelatedField(queryset=LectureTask.objects.all())
 
     class Meta:
         model = TaskControl
-        fields = ['datetime', 'attachment', 'completed', 'checked', 'grade', 'task']
+        fields = ['datetime', 'attachment', 'checked', 'grade', 'task']
 
     def create(self, validated_data):
         return TaskControl.objects.create(**validated_data)
 
+    def update(self, instance, validated_data):
+        instance.datetime = validated_data.get('datetime', instance.datetime)
+        instance.attachment = validated_data.get('attachment', instance.attachment)
+        instance.checked = validated_data.get('checked', instance.checked)
+        instance.grade = validated_data.get('grade', instance.grade)
+        instance.save()
+        return instance
 
-class TaskCommentSerializer(serializers.Serializer):
+
+class TaskCommentsSerializer(serializers.Serializer):
     comment = serializers.CharField()
     datetime = serializers.DateTimeField(required=False)
     taskcontrol = serializers.PrimaryKeyRelatedField(queryset=TaskControl.objects.all())
 
     class Meta:
-        model = TaskControl
-        fields = ['name', 'text', 'lecture']
+        model = TaskComments
+        fields = ['comment', 'datetime', 'taskcontrol']
 
     def create(self, validated_data):
         return TaskComments.objects.create(**validated_data)
+
+    def update(self, instance, validated_data):
+        instance.comment = validated_data.get('comment', instance.comment)
+        instance.datetime = validated_data.get('datetime', instance.datetime)
+        instance.save()
+        return instance
