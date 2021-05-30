@@ -4,8 +4,8 @@ from django.contrib.auth.models import User, Permission, Group
 from django.contrib.contenttypes.models import ContentType
 from django.db.models import Q
 from django.shortcuts import render, redirect
-from .models import Course, Lecture, LectureTask, TaskControl
-from .forms import CoursesForm, LectureForm, TaskForm, AddUserForm, CourseGroup, TaskControlForm
+from .models import Course, Lecture, LectureTask, TaskControl, TaskComments
+from .forms import CoursesForm, LectureForm, TaskForm, AddUserForm, CourseGroup, TaskControlForm, TaskCommentsForm
 from django.views.generic import DetailView, UpdateView, ListView, DeleteView
 
 User = get_user_model()
@@ -124,9 +124,25 @@ class LectureTasksControlView(ListView):
     def get_context_data(self, **kwargs):
         context = super(LectureTasksControlView, self).get_context_data(**kwargs)
         user_id = self.request.user.id
-        context['taskscontrols'] = TaskControl.objects.filter(task=self.kwargs.get('pk')).filter(users__id=user_id)
+        print(self.kwargs.get('pk'))
+        context['taskcontrols'] = TaskControl.objects.filter(task=self.kwargs.get('pk'))  # .filter(users__id=user_id)
         context['task_id'] = self.kwargs.get('pk')
         # context['users'] = self.kwargs.get('pk')
+        return context
+
+
+class CommentsTaskControlView(ListView):
+    model = TaskComments
+    template_name = 'main/comments_taskcontrol.html'
+    context_object_name = 'task_comments'
+
+    def get_context_data(self, **kwargs):
+        context = super(CommentsTaskControlView, self).get_context_data(**kwargs)
+        print(context)
+        context['taskcontrol'] = self.kwargs.get('pk')
+        context['task_comments'] = TaskComments.objects.filter(
+            taskcontrol=self.kwargs.get('pk'))  # .filter(users__id=user_id)
+        # context['task_id'] = self.kwargs.get('pk')
         return context
 
 
@@ -280,3 +296,24 @@ def add_taskcontrol(request, pk):
         'error': error
     }
     return render(request, 'main/add_taskcontrol.html', data)
+
+
+def add_comment(request, pk):
+    error = ''
+    if request.method == 'POST':
+        form = TaskCommentsForm(request.POST)
+
+        if form.is_valid():
+            comment = form.save()
+            comment.users.add(request.user)
+            # print('pk', pk)
+            return redirect('comments_taskcontrol', pk)
+        else:
+            error = 'Form is not valid'
+
+    form = TaskCommentsForm()
+    data = {
+        'form': form,
+        'error': error
+    }
+    return render(request, 'main/add_comment.html', data)

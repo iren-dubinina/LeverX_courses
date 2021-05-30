@@ -1,0 +1,25 @@
+{% extends 'main/layout.html' %}
+
+{% load static %}
+
+{% block content %}
+<div class="main-list">
+    <table class="table" style="width: 65%">
+        <tr>
+            <th scope="col">Date</th>
+            <th scope="col">Comment</th>
+        </tr>
+        {% if task_comments %}
+        {% for el in task_comments %}
+        <tr>
+            <td>{{el.datetime}}</td>
+            <td>Comment {{el.comment}}</td>
+        </tr>
+        {% endfor %}
+        {% endif %}
+    </table>
+    <a href="{% url 'add_comment' taskcontrol %}">
+        <button class="btn btn-info">Add Comment</button>
+    </a>
+</div>
+{% endblock %}

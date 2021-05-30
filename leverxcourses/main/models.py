@@ -65,9 +65,3 @@ class TaskComments(models.Model):
     comment = models.TextField('Comment', max_length=250)
     datetime = models.DateTimeField('DateTime', default=datetime.now())
     taskcontrol = models.ForeignKey(TaskControl, on_delete=models.PROTECT)
-
-    def __str__(self):
-        return self.datetime
-
-    def get_absolute_url(self):
-        return f'/'

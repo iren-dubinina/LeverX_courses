@@ -10,6 +10,7 @@
 
 {% block content %}
 <div class="main-list">
+    <p>{{ Fro }}</p>
     <table class="table" style="width: 65%">
         <tr>
             <th scope="col">Date</th>
@@ -27,13 +28,13 @@
         {% for el in taskcontrols %}
         <tr>
             <td>{{el.datetime}}</td>
-            <td>{{el.attachment}}</td>
-            <td>{{el.completed}}</td>
-            <td>{{el.grade}}</td>
+            <td>Attachment {{el.attachment}}</td>
+            <td>Completed {{el.completed}}</td>
+            <td><a href="{% url 'comments_taskcontrol' el.id %}">Grade {{el.grade}}</a></td>
             {% if perms.main.delete_taskcontrol %}
-            <td><a href="{% url 'delete_taskcontrol' el.id %}">Delete</a></td>
+                <td><a href="{% url 'delete_taskcontrol' el.id %}">Delete</a></td>
             {% endif %}
-            {% if perms.main.update_taskcontrol %}
+                {% if perms.main.update_taskcontrol %}
             <td><a href="{% url 'update_taskcontrol' el.id %}">Update</a></td>
             {% endif %}
         </tr>

@@ -9,10 +9,10 @@
     <form method="post" enctype="multipart/form-data">
         <h1>Add homework</h1>
         {% csrf_token %}
-        {{ form.datetime}}<br>
-        {{ form.attachment}}<br>
-        {{ form.completed }}<br>
         {{ form.task }}<br>
+        {{ form.datetime}}<br>
+        Attachment {{ form.attachment}}<br>
+        Completed {{ form.completed }}<br>
         <span>{{ error }}</span><br>
         <button class="btn btn-success" type="submit">Add homework</button>
     </form>

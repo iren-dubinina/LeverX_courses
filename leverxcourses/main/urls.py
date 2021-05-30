@@ -25,5 +25,7 @@ urlpatterns = [
     path('<int:pk>/taskcontrol', views.LectureTasksControlView.as_view(), name='taskcontrol'),
     path('<int:pk>/add_taskcontrol', views.add_taskcontrol, name='add_taskcontrol'),
     path('<int:pk>/delete_taskcontrol', views.TaskcontrolDeleteView.as_view(), name='delete_taskcontrol'),
-    path('<int:pk>/update_taskcontrol', views.TaskcontrolUpdateView.as_view(), name='update_taskcontrol')
+    path('<int:pk>/update_taskcontrol', views.TaskcontrolUpdateView.as_view(), name='update_taskcontrol'),
+    path('<int:pk>/comments_taskcontrol', views.CommentsTaskControlView.as_view(), name='comments_taskcontrol'),
+    path('<int:pk>/add_comment', views.add_comment, name='add_comment')
 ]
