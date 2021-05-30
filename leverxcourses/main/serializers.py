@@ -20,10 +20,11 @@ class CourseSerializer(serializers.Serializer):
     id = serializers.IntegerField(required=False)
     name = serializers.CharField()
     date = serializers.DateField()
+    users = serializers.PrimaryKeyRelatedField(many=True, required=False, queryset=User.objects.all())
 
     class Meta:
         model = Course
-        fields = ['id', 'name', 'date']
+        fields = ['id', 'name', 'date', 'users']
 
     def create(self, validated_data):
         return Course.objects.create(**validated_data)
@@ -31,6 +32,7 @@ class CourseSerializer(serializers.Serializer):
     def update(self, instance, validated_data):
         instance.name = validated_data.get('name', instance.name)
         instance.date = validated_data.get('date', instance.date)
+        instance.users.set(validated_data.get('users', instance.users))
         instance.save()
         return instance
 
@@ -113,5 +115,21 @@ class TaskCommentsSerializer(serializers.Serializer):
     def update(self, instance, validated_data):
         instance.comment = validated_data.get('comment', instance.comment)
         instance.datetime = validated_data.get('datetime', instance.datetime)
+        instance.save()
+        return instance
+
+
+class CourseUsersSerializer(serializers.Serializer):
+    users = serializers.PrimaryKeyRelatedField(many=True, required=True, queryset=User.objects.all())
+
+    class Meta:
+        model = Course
+        fields = ['id', 'users']
+
+    def create(self, validated_data):
+        return Course.objects.create(**validated_data)
+
+    def update(self, instance, validated_data):
+        instance.users += validated_data.get('users')
         instance.save()
         return instance

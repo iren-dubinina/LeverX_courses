@@ -2,7 +2,6 @@ from django.contrib.auth import get_user_model
 from rest_framework import generics, mixins, status
 from rest_framework.parsers import MultiPartParser
 from rest_framework.permissions import DjangoModelPermissions, IsAuthenticated
-from rest_framework.renderers import JSONRenderer
 from rest_framework.response import Response
 
 from . import serializers
@@ -59,22 +58,6 @@ class CourseDetail(mixins.RetrieveModelMixin,
 
     def delete(self, request, *args, **kwargs):
         return self.destroy(request, *args, **kwargs)
-
-
-def add_user_in_course(request, pk, user):
-    model = Course.objects.get(pk=pk)
-    new_user = User.objects.get(pk=user)
-    model.users.add(new_user)
-    response = Response(
-        {"detail": "user saved"},
-        content_type="application/json",
-        status=status.HTTP_200_OK,
-    )
-    response.accepted_renderer = JSONRenderer()
-    response.accepted_media_type = "application/json"
-    response.renderer_context = {}
-
-    return response
 
 
 #################################LECTURES#################################
@@ -159,9 +142,6 @@ class TaskDetail(mixins.RetrieveModelMixin,
 
     def put(self, request, *args, **kwargs):
         return self.update(request, *args, **kwargs)
-
-    def delete(self, request, *args, **kwargs):
-        return self.destroy(request, *args, **kwargs)
 
 
 class TaskControlList(mixins.ListModelMixin,
