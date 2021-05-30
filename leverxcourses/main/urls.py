@@ -1,27 +1,28 @@
-from django.contrib.auth.decorators import login_required, permission_required
-from django.urls import path
 from django.conf.urls import url
+from django.urls import path, include
+from django.views.generic import TemplateView
+from rest_framework import routers
+from rest_framework.schemas import get_schema_view
 
 from . import views
 
+router = routers.DefaultRouter()
+
 urlpatterns = [
-    path('', views.index, name='home'),
-    path('course', views.course, name='course'),
-    url(r'^lecture/(?P<pk>\d+)/$', views.CourseLecturesView.as_view(), name='lectures'),
-    url(r'^lecture/(?P<pk>\d+)/task/$', views.CourseTasksView.as_view(), name='tasks'),
-    # path('tasks', views.tasks, name='tasks'),
-    path('create', views.create, name='create'),
-    path('create_lecture', views.create_lecture, name='create_lecture'),
-    path('lecture/<int:pk>/create_task', views.create_task, name='create_task'),
-    path('<int:pk>', views.CourseDetailView.as_view(), name='course_details'),
-    path('<int:pk>/update', views.CourseUpdateView.as_view(), name='update'),
-    path('<int:pk>/delete', views.CourseDeleteView.as_view(), name='delete'),
-    path('<int:pk>/update_lecture', views.LectureUpdateView.as_view(), name='update_lecture'),
-    path('<int:pk>/delete_lecture', permission_required( views.LectureDeleteView.as_view(), 'main.delete_course'), name='delete_lecture'),
-    path('<int:pk>/update_task', views.LectureTaskUpdateView.as_view(), name='update_task'),
-    path('<int:pk>/delete_task', views.LectureTaskDeleteView.as_view(), name='delete_task'),
-    path('<int:pk>/course_users', views.course_users, name='course_users'),
-    path('add_group', views.add_group, name='add_group'),
-    path('<int:pk>/taskcontrol', views.LectureTasksControlView.as_view(), name='taskcontrol'),
-    path('<int:pk>/add_taskcontrol', views.add_taskcontrol, name='add_taskcontrol')
+    path('courses/', views.CourseList.as_view()),
+    path('courses/<int:pk>/', views.CourseDetail.as_view()),
+    path('lectures/', views.LectureList.as_view()),
+    path('lectures/<int:pk>/', views.LectureDetail.as_view()),
+    path('tasks/', views.TaskList.as_view()),
+    path('tasks/<int:pk>/', views.TaskDetail.as_view()),
+    path('main', get_schema_view(
+        title="Your Project",
+        description="API for all things …",
+        version="1.0.0"
+    ), name='openapi-schema'),
+    path('swagger-ui/', TemplateView.as_view(
+        template_name='swagger-ui.html',
+        extra_context={'schema_url': 'openapi-schema'}
+    ), name='swagger-ui'),
+    url(r'^api-auth/', include('rest_framework.urls', namespace='rest_framework'))
 ]

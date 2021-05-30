@@ -8,7 +8,7 @@ from django.forms import ModelForm, TextInput, DateInput, FileInput, Select, Tex
 class CoursesForm(ModelForm):
     class Meta:
         model = Course
-        fields = ['name', 'date', 'group']
+        fields = ['name', 'date']
 
         widgets = {
             "name": TextInput(attrs={
@@ -19,35 +19,16 @@ class CoursesForm(ModelForm):
                 'class': 'form-control',
                 'placeholder': 'Start date'
             }),
-            "group": Select(attrs={
-                'class': 'form-control',
-                'placeholder': 'Group name'
-            }),
-        }
-
-
-class CourseGroup(ModelForm):
-    img = ImageField()
-
-    class Meta:
-        model = CourseGroup
-        fields = ['name', 'img']
-
-        widgets = {
-            "name": TextInput(attrs={
-                'class': 'form-control',
-                'placeholder': 'Сourse name'
-            })
         }
 
 
 class LectureForm(ModelForm):
     class Meta:
         model = Lecture
-        fields = ['name', 'slides', 'course']
+        fields = ['theme', 'slides', 'course']
 
         widgets = {
-            "name": TextInput(attrs={
+            "theme": TextInput(attrs={
                 'class': 'form-control',
                 'placeholder': 'Lecture name'
             }),
@@ -78,7 +59,7 @@ class TaskForm(ModelForm):
             "lecture": Select(attrs={
                 'class': 'form-control',
                 'placeholder': 'Course'
-            })
+            }),
         }
 
 

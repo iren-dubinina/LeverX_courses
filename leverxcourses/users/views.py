@@ -2,6 +2,7 @@ from django.contrib.auth import authenticate, login, logout
 from django.contrib.auth.forms import AuthenticationForm
 from django.contrib.auth.models import Group
 from django.shortcuts import render, redirect
+
 from .forms import SignUpForm
 
 
@@ -21,7 +22,7 @@ def users_home(request):
             my_group = Group.objects.get(name='student')
             my_group.user_set.add(user)
             login(request, user)
-            return redirect('home')
+            return redirect('swagger-ui')
     else:
         form = SignUpForm()
     return render(request, 'users/registration.html', {'title': 'Users', 'form': form})
@@ -39,7 +40,7 @@ def sign_in(request):
         user = authenticate(request, username=username, password=password)
         if user is not None:
             login(request, user)
-            return redirect('home')
+            return redirect('swagger-ui')
     else:
         form = AuthenticationForm()
     return render(request, 'users/login.html', {'title': 'Login', 'form': form})

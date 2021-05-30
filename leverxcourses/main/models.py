@@ -11,7 +11,6 @@ class CourseGroup(models.Model):
 class Course(models.Model):
     name = models.CharField('Name', max_length=20)
     date = models.DateField('Date start')
-    group = models.ForeignKey(CourseGroup, on_delete=models.PROTECT)
     users = models.ManyToManyField(User)
 
     def __str__(self):
@@ -22,15 +21,15 @@ class Course(models.Model):
 
 
 class Lecture(models.Model):
-    name = models.CharField('Name', max_length=20)
-    slides = models.FileField('Slides')
+    theme = models.CharField('Theme', max_length=20)
+    slides = models.FileField('Slides', upload_to=u'slides')
     course = models.ForeignKey(Course, on_delete=models.CASCADE)
 
     def __str__(self):
-        return self.name
+        return self.theme
 
-    def get_absolute_url(self):
-        return f'/'
+    def __unicode__(self):
+        return u"file {0}".format(self.file.url)
 
 
 class LectureTask(models.Model):
