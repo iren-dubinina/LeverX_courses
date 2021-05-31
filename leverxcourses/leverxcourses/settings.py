@@ -157,10 +157,7 @@ SWAGGER_SETTINGS = {
     }
 }
 
-
 SECRET_KEY = "pink_floyd_is_the_best"
-
-
 
 LOGGING = {
     'version': 1,
@@ -198,17 +195,3 @@ LOGGING = {
         },
     },
 }
-
-
-LOGGING = {
-    'version': 1,
-    'disable_existing_loggers': False,
-    'handlers': {
-        'file': {
-            'level': 'DEBUG',
-            'class': 'logging.FileHandler',
-            'filename': '/path/to/django/debug.log',
-        },
-    },
-}
-

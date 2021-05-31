@@ -6,20 +6,6 @@ User = get_user_model()
 from .models import Course, Lecture, LectureTask, TaskControl, TaskComments
 
 
-class UserSerializer(serializers.HyperlinkedModelSerializer):
-    """ Serializer for user """
-    class Meta:
-        model = User
-        fields = ['url', 'username', 'email', 'groups']
-
-
-class GroupSerializer(serializers.HyperlinkedModelSerializer):
-    """ Serializer for group users """
-    class Meta:
-        model = Group
-        fields = ['url', 'name']
-
-
 class CourseSerializer(serializers.Serializer):
     """ Serializer for Course table """
     id = serializers.IntegerField(required=False)
