@@ -78,9 +78,9 @@ WSGI_APPLICATION = 'leverxcourses.wsgi.application'
 DATABASES = {
     'default': {
         'ENGINE': 'django.db.backends.mysql',
-        'NAME': 'leverx2',
+        'NAME': 'leverx',
         'USER': 'root',
-        'PASSWORD': 'Sparina',
+        'PASSWORD': '',
         'HOST': '127.0.0.1',
         'PORT': '3306',
     }
