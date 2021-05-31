@@ -1,23 +1,9 @@
-from django.conf import settings
 from django.contrib.auth import get_user_model
-from django.contrib.auth.models import Group
 from rest_framework import serializers
 
 User = get_user_model()
 
 from .models import Course, Lecture, LectureTask, TaskControl, TaskComments
-
-
-class UserSerializer(serializers.HyperlinkedModelSerializer):
-    class Meta:
-        model = User
-        fields = ['url', 'username', 'email', 'groups']
-
-
-class GroupSerializer(serializers.HyperlinkedModelSerializer):
-    class Meta:
-        model = Group
-        fields = ['url', 'name']
 
 
 class CourseSerializer(serializers.Serializer):
@@ -31,7 +17,11 @@ class CourseSerializer(serializers.Serializer):
         fields = ['id', 'name', 'date', 'users']
 
     def create(self, validated_data):
-        return Course.objects.create(**validated_data)
+        users = validated_data.get('users')
+        course = Course.objects.create(**{'name': validated_data.get('name'),
+                                          'date': validated_data.get('date')})
+        course.users.set(validated_data.get('users'))
+        return course
 
     def update(self, instance, validated_data):
         instance.name = validated_data.get('name', instance.name)

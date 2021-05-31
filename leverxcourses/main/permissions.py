@@ -1,12 +1,12 @@
-from django.contrib.auth.models import Permission, Group
+from django.contrib.auth import get_user_model
+from rest_framework.permissions import BasePermission
 
-# Group.objects.create(name='student')
-# Group.objects.create(name='lecturer')
+User = get_user_model()
 
-group = Group.objects.filter(name='lecturer')[0]
-permissions = Permission.objects.filter(codename__icontains='lecture')
-group.permissions.add(*permissions)
-permissions = Permission.objects.filter(codename__icontains='task')
-group.permissions.add(*permissions)
-permissions = Permission.objects.filter(codename__icontains='course')
-group.permissions.add(*permissions)
+
+class LecturerOrGetPermissions(BasePermission):
+    allowed_user_roles = [User.LECTURER]
+
+    def has_permission(self, request, view):
+        is_allowed_user = request.user.role in self.allowed_user_roles
+        return is_allowed_user or request.method == 'GET'

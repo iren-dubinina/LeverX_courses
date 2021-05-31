@@ -39,7 +39,7 @@ INSTALLED_APPS = [
     'django.contrib.messages',
     'django.contrib.staticfiles',
     'rest_framework',
-    'rest_framework_swagger'
+    'drf_yasg',
 ]
 
 MIDDLEWARE = [
@@ -156,6 +156,5 @@ SWAGGER_SETTINGS = {
         }
     }
 }
-
 
 SECRET_KEY = "pink_floyd_is_the_best"

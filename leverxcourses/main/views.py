@@ -1,25 +1,15 @@
 from django.contrib.auth import get_user_model
 from rest_framework import generics, mixins, status
 from rest_framework.parsers import MultiPartParser
-from rest_framework.permissions import DjangoModelPermissions, IsAuthenticated, AllowAny
+from rest_framework.permissions import AllowAny
 from rest_framework.response import Response
-import pytest
 
-from . import serializers, permissions
+from . import serializers
 from .models import Course, Lecture, LectureTask, TaskControl, TaskComments
+from .permissions import LecturerOrGetPermissions
 
 User = get_user_model()
 
-# content of test_class.py
-# class TestClass:
-#     def test_one(self):
-#         x = "this"
-#         assert "h" in x
-#
-#     def test_two(self):
-#         x = "hello"
-#         assert hasattr(x, "check")
-#
 
 #################################COURSES#################################
 
@@ -31,7 +21,7 @@ class CourseList(mixins.ListModelMixin,
     and create new courses
     """
     serializer_class = serializers.CourseSerializer
-    permission_classes = [AllowAny, DjangoModelPermissions]
+    permission_classes = [LecturerOrGetPermissions]
 
     def get_queryset(self):
         return Course.objects.filter(users__id=self.request.user.id)
@@ -40,6 +30,7 @@ class CourseList(mixins.ListModelMixin,
         return self.list(request, *args, **kwargs)
 
     def post(self, request, *args, **kwargs):
+        print(request.user)
         serializer = self.get_serializer(data=request.data)
         serializer.is_valid(raise_exception=True)
         new_course = serializer.save()
@@ -53,16 +44,13 @@ class CourseDetail(mixins.RetrieveModelMixin,
                    mixins.DestroyModelMixin,
                    generics.GenericAPIView):
     """
-    API endpoint that allows get, update, delete courses
+    API endpoint that allows update and delete courses
     """
     serializer_class = serializers.CourseSerializer
-    permission_classes = [AllowAny, DjangoModelPermissions]
+    permission_classes = [LecturerOrGetPermissions]
 
     def get_queryset(self):
         return Course.objects.filter(users__id=self.request.user.id)
-
-    def get(self, request, *args, **kwargs):
-        return self.retrieve(request, *args, **kwargs)
 
     def put(self, request, *args, **kwargs):
         return self.update(request, *args, **kwargs)
@@ -80,7 +68,7 @@ class LectureList(mixins.ListModelMixin,
     and create new lectures
     """
     serializer_class = serializers.LectureSerializer
-    permission_classes = [AllowAny, DjangoModelPermissions]
+    permission_classes = [LecturerOrGetPermissions]
 
     def get_queryset(self):
         return Lecture.objects.filter(course__users__id=self.request.user.id)
@@ -97,14 +85,11 @@ class LectureDetail(mixins.RetrieveModelMixin,
                     mixins.DestroyModelMixin,
                     generics.GenericAPIView):
     serializer_class = serializers.LectureSerializer
-    permission_classes = [IsAuthenticated, DjangoModelPermissions]
+    permission_classes = [LecturerOrGetPermissions]
     parser_classes = (MultiPartParser,)
 
     def get_queryset(self):
         return Lecture.objects.filter(course__users__id=self.request.user.id)
-
-    def get(self, request, *args, **kwargs):
-        return self.retrieve(request, *args, **kwargs)
 
     def put(self, request, *args, **kwargs):
         return self.update(request, *args, **kwargs)
@@ -123,7 +108,7 @@ class TaskList(mixins.ListModelMixin,
     and create new tasks
     """
     serializer_class = serializers.TaskSerializer
-    permission_classes = [AllowAny, DjangoModelPermissions]
+    permission_classes = [LecturerOrGetPermissions]
 
     def get_queryset(self):
         return LectureTask.objects.filter(lecture__course__users__id=self.request.user.id)
@@ -143,16 +128,16 @@ class TaskDetail(mixins.RetrieveModelMixin,
     API endpoint that allows get, update, delete tasks
     """
     serializer_class = serializers.TaskSerializer
-    permission_classes = [AllowAny, DjangoModelPermissions]
+    permission_classes = [LecturerOrGetPermissions]
 
     def get_queryset(self):
         return LectureTask.objects.filter(lecture__course__users__id=self.request.user.id)
 
-    def get(self, request, *args, **kwargs):
-        return self.retrieve(request, *args, **kwargs)
-
     def put(self, request, *args, **kwargs):
         return self.update(request, *args, **kwargs)
+
+    def delete(self, request, *args, **kwargs):
+        return self.destroy(request, *args, **kwargs)
 
 
 ##############################TaskControl#################################
@@ -164,7 +149,7 @@ class TaskControlList(mixins.ListModelMixin,
     and create new home tasks
     """
     serializer_class = serializers.TaskControlSerializer
-    permission_classes = [AllowAny,]
+    permission_classes = [AllowAny, ]
 
     def get_queryset(self):
         return TaskControl.objects.filter(task__lecture__course__users__id=self.request.user.id)
@@ -184,13 +169,10 @@ class TaskControlDetail(mixins.RetrieveModelMixin,
     API endpoint that allows get, update, delete home tasks
     """
     serializer_class = serializers.TaskSerializer
-    permission_classes = [AllowAny,]
+    permission_classes = [AllowAny, ]
 
     def get_queryset(self):
         return TaskControl.objects.filter(task__lecture__course__users__id=self.request.user.id)
-
-    def get(self, request, *args, **kwargs):
-        return self.retrieve(request, *args, **kwargs)
 
     def put(self, request, *args, **kwargs):
         return self.update(request, *args, **kwargs)
@@ -225,16 +207,13 @@ class TaskCommentsDetail(mixins.RetrieveModelMixin,
                          mixins.DestroyModelMixin,
                          generics.GenericAPIView):
     """
-    API endpoint that allows get, update, delete home tasks
+    API endpoint that allows get, update, delete comments
     """
     serializer_class = serializers.TaskSerializer
     permission_classes = [AllowAny]
 
     def get_queryset(self):
         return TaskComments.objects.filter(task__lecture__course__users__id=self.request.user.id)
-
-    def get(self, request, *args, **kwargs):
-        return self.retrieve(request, *args, **kwargs)
 
     def put(self, request, *args, **kwargs):
         return self.update(request, *args, **kwargs)

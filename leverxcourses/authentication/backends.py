@@ -1,10 +1,12 @@
+import logging
+
 import jwt
-
 from django.conf import settings
-
 from rest_framework import authentication, exceptions
 
 from .models import User
+
+logger = logging.getLogger()
 
 
 class JWTAuthentication(authentication.BaseAuthentication):
@@ -12,78 +14,35 @@ class JWTAuthentication(authentication.BaseAuthentication):
 
     def authenticate(self, request):
         """
-        Метод authenticate вызывается каждый раз, независимо от того, требует
-        ли того эндпоинт аутентификации. 'authenticate' имеет два возможных
-        возвращаемых значения:
-            1) None - мы возвращаем None если не хотим аутентифицироваться.
-            Обычно это означает, что мы значем, что аутентификация не удастся.
-            Примером этого является, например, случай, когда токен не включен в
-            заголовок.
-            2) (user, token) - мы возвращаем комбинацию пользователь/токен
-            тогда, когда аутентификация пройдена успешно. Если ни один из
-            случаев не соблюден, это означает, что произошла ошибка, и мы
-            ничего не возвращаем. В таком случае мы просто вызовем исключение
-            AuthenticationFailed и позволим DRF сделать все остальное.
+        This method is called with every request
         """
         request.user = None
-
-        # 'auth_header' должен быть массивом с двумя элементами:
-        # 1) именем заголовка аутентификации (Token в нашем случае)
-        # 2) сам JWT, по которому мы должны пройти аутентифкацию
         auth_header = authentication.get_authorization_header(request).split()
         auth_header_prefix = self.authentication_header_prefix.lower()
-
-        print(auth_header)
-        print(auth_header_prefix)
 
         if not auth_header:
             return None
 
-        if len(auth_header) == 1:
-            # Некорректный заголовок токена, в заголовке передан один элемент
-            return None
-
         elif len(auth_header) > 2:
-            # Некорректный заголовок токена, какие-то лишние пробельные символы
             return None
-
-        # JWT библиотека которую мы используем, обычно некорректно обрабатывает
-        # тип bytes, который обычно используется стандартными библиотеками
-        # Python3 (HINT: использовать PyJWT). Чтобы точно решить это, нам нужно
-        # декодировать prefix и token. Это не самый чистый код, но это хорошее
-        # решение, потому что возможна ошибка, не сделай мы этого.
-        prefix = auth_header[0].decode('utf-8')
-        token = auth_header[1].decode('utf-8')
-
-        # if prefix.lower() in auth_header_prefix.:
-        #     # Префикс заголовка не тот, который мы ожидали - отказ.
-        #     return None
-
-        # К настоящему моменту есть "шанс", что аутентификация пройдет успешно.
-        # Мы делегируем фактическую аутентификацию учетных данных методу ниже.
+        token = auth_header[0].decode('utf-8')
         return self._authenticate_credentials(request, token)
 
     def _authenticate_credentials(self, request, token):
-        """
-        Попытка аутентификации с предоставленными данными. Если успешно -
-        вернуть пользователя и токен, иначе - сгенерировать исключение.
-        """
         try:
-            print(token)
-            print(settings.SECRET_KEY)
             payload = jwt.decode(token, settings.SECRET_KEY, algorithms="HS256")
         except Exception:
-            msg = 'Ошибка аутентификации. Невозможно декодировать токен'
+            msg = 'Error in token decoder'
             raise exceptions.AuthenticationFailed(msg)
 
         try:
             user = User.objects.get(pk=payload['id'])
         except User.DoesNotExist:
-            msg = 'Пользователь соответствующий данному токену не найден.'
+            msg = 'User not found'
             raise exceptions.AuthenticationFailed(msg)
 
         if not user.is_active:
-            msg = 'Данный пользователь деактивирован.'
+            msg = 'User is not active'
             raise exceptions.AuthenticationFailed(msg)
-
+        print("Token is ok")
         return (user, token)
