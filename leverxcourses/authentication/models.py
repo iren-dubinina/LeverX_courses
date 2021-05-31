@@ -6,23 +6,23 @@ from django.conf import settings
 from django.contrib.auth.models import (
     AbstractBaseUser, BaseUserManager, PermissionsMixin
 )
-
 from django.db import models
 
-# Create your models here.
+
 class UserManager(BaseUserManager):
     """
     Custom Manager from BaseUserManager
     """
     def create_user(self, username, email, password=None):
         """ Creates and returns a user with an email, password and name """
+    def create_user(self, username, email, role, password=None):
         if username is None:
             raise TypeError('Users must have a username.')
 
         if email is None:
             raise TypeError('Users must have an email address.')
 
-        user = self.model(username=username, email=self.normalize_email(email))
+        user = self.model(username=username, email=self.normalize_email(email), role=role)
         user.set_password(password)
         user.save()
 
@@ -40,6 +40,7 @@ class UserManager(BaseUserManager):
 
         return user
 
+
 class User(AbstractBaseUser, PermissionsMixin):
     """ Create unique user identificator as a username and index for it """
     username = models.CharField(db_index=True, max_length=255, unique=True)
@@ -54,9 +55,16 @@ class User(AbstractBaseUser, PermissionsMixin):
     created_at = models.DateTimeField(auto_now_add=True)
     updated_at = models.DateTimeField(auto_now=True)
 
-    # additional fields required by Django
+    LECTURER = 2
+    STUDENT = 3
 
-    # login fields
+    ROLE_CHOICES = (
+        (LECTURER, 'Lecturer'),
+        (STUDENT, 'Student'),
+    )
+
+    role = models.PositiveSmallIntegerField(choices=ROLE_CHOICES, blank=True, null=True)
+
     USERNAME_FIELD = 'email'
     REQUIRED_FIELDS = ['username']
 
@@ -91,4 +99,4 @@ class User(AbstractBaseUser, PermissionsMixin):
             'exp': dt.utcfromtimestamp(dt.timestamp())
         }, settings.SECRET_KEY, algorithm='HS256')
 
-        return token #.decode('utf-8')
+        return token # .decode('utf-8')

@@ -14,20 +14,16 @@ renderer_classes = (UserJSONRenderer,)
 
 class RegistrationAPIView(APIView):
     """
-    Разрешить всем пользователям (аутентифицированным и нет) доступ к данному эндпоинту.
+    Everybody can access this endpoint
     """
     permission_classes = (AllowAny,)
     serializer_class = RegistrationSerializer
 
     def post(self, request):
-        user = request.data.get('user', {})
-
-        # Паттерн создания сериализатора, валидации и сохранения - довольно
-        # стандартный, и его можно часто увидеть в реальных проектах.
+        user = request.data
         serializer = self.serializer_class(data=user)
         serializer.is_valid(raise_exception=True)
-        serializer.save()
-
+        user = serializer.save()
         return Response(serializer.data, status=status.HTTP_201_CREATED)
 
 
@@ -37,10 +33,6 @@ class LoginAPIView(APIView):
 
     def post(self, request):
         user = request.data.get('user', {})
-
-        # Обратите внимание, что мы не вызываем метод save() сериализатора, как
-        # делали это для регистрации. Дело в том, что в данном случае нам
-        # нечего сохранять. Вместо этого, метод validate() делает все нужное.
         serializer = self.serializer_class(data=user)
         serializer.is_valid(raise_exception=True)
 
@@ -53,17 +45,11 @@ class UserRetrieveUpdateAPIView(RetrieveUpdateAPIView):
     serializer_class = UserSerializer
 
     def retrieve(self, request, *args, **kwargs):
-        # Здесь нечего валидировать или сохранять. Мы просто хотим, чтобы
-        # сериализатор обрабатывал преобразования объекта User во что-то, что
-        # можно привести к json и вернуть клиенту.
         serializer = self.serializer_class(request.user)
-
         return Response(serializer.data, status=status.HTTP_200_OK)
 
     def update(self, request, *args, **kwargs):
         serializer_data = request.data.get('user', {})
-
-        # Паттерн сериализации, валидирования и сохранения - то, о чем говорили
         serializer = self.serializer_class(
             request.user, data=serializer_data, partial=True
         )

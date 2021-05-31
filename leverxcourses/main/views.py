@@ -5,9 +5,10 @@ from rest_framework.permissions import DjangoModelPermissions, IsAuthenticated, 
 from rest_framework.response import Response
 
 
-from . import serializers, permissions
+from . import serializers
 from .models import Course, Lecture, LectureTask, TaskControl, TaskComments
 import logging
+from .permissions import LecturerOrGetPermissions
 
 
 # Get an instance of a logger
@@ -24,7 +25,7 @@ class CourseList(mixins.ListModelMixin,
     and create new courses
     """
     serializer_class = serializers.CourseSerializer
-    permission_classes = [AllowAny, DjangoModelPermissions]
+    permission_classes = [LecturerOrGetPermissions]
 
 
     def get_queryset(self):
@@ -57,11 +58,11 @@ class CourseDetail(mixins.RetrieveModelMixin,
                    mixins.DestroyModelMixin,
                    generics.GenericAPIView):
     """
-    API endpoint that allows get, update, delete courses
+    API endpoint that allows update and delete courses
     """
     logger.info('Getting the course ')
     serializer_class = serializers.CourseSerializer
-    permission_classes = [AllowAny, DjangoModelPermissions]
+    permission_classes = [LecturerOrGetPermissions]
 
     def get_queryset(self):
         try:
@@ -103,7 +104,7 @@ class LectureList(mixins.ListModelMixin,
     """
     logger.info('Getting the list of lectures')
     serializer_class = serializers.LectureSerializer
-    permission_classes = [AllowAny, DjangoModelPermissions]
+    permission_classes = [LecturerOrGetPermissions]
 
     def get_queryset(self):
         return Lecture.objects.filter(course__users__id=self.request.user.id)
@@ -120,14 +121,11 @@ class LectureDetail(mixins.RetrieveModelMixin,
                     mixins.DestroyModelMixin,
                     generics.GenericAPIView):
     serializer_class = serializers.LectureSerializer
-    permission_classes = [IsAuthenticated, DjangoModelPermissions]
+    permission_classes = [LecturerOrGetPermissions]
     parser_classes = (MultiPartParser,)
 
     def get_queryset(self):
         return Lecture.objects.filter(course__users__id=self.request.user.id)
-
-    def get(self, request, *args, **kwargs):
-        return self.retrieve(request, *args, **kwargs)
 
     def put(self, request, *args, **kwargs):
         return self.update(request, *args, **kwargs)
@@ -147,7 +145,7 @@ class TaskList(mixins.ListModelMixin,
     """
     logger.info('Getting the list of tasks')
     serializer_class = serializers.TaskSerializer
-    permission_classes = [AllowAny, DjangoModelPermissions]
+    permission_classes = [LecturerOrGetPermissions]
 
     def get_queryset(self):
         return LectureTask.objects.filter(lecture__course__users__id=self.request.user.id)
@@ -167,16 +165,16 @@ class TaskDetail(mixins.RetrieveModelMixin,
     API endpoint that allows get, update, delete tasks
     """
     serializer_class = serializers.TaskSerializer
-    permission_classes = [AllowAny, DjangoModelPermissions]
+    permission_classes = [LecturerOrGetPermissions]
 
     def get_queryset(self):
         return LectureTask.objects.filter(lecture__course__users__id=self.request.user.id)
 
-    def get(self, request, *args, **kwargs):
-        return self.retrieve(request, *args, **kwargs)
-
     def put(self, request, *args, **kwargs):
         return self.update(request, *args, **kwargs)
+
+    def delete(self, request, *args, **kwargs):
+        return self.destroy(request, *args, **kwargs)
 
 
 ##############################TaskControl#################################
@@ -189,7 +187,7 @@ class TaskControlList(mixins.ListModelMixin,
     """
     logger.info('Getting the list of home works')
     serializer_class = serializers.TaskControlSerializer
-    permission_classes = [AllowAny,]
+    permission_classes = [AllowAny, ]
 
     def get_queryset(self):
         return TaskControl.objects.filter(task__lecture__course__users__id=self.request.user.id)
@@ -209,13 +207,10 @@ class TaskControlDetail(mixins.RetrieveModelMixin,
     API endpoint that allows get, update, delete home tasks
     """
     serializer_class = serializers.TaskSerializer
-    permission_classes = [AllowAny,]
+    permission_classes = [AllowAny, ]
 
     def get_queryset(self):
         return TaskControl.objects.filter(task__lecture__course__users__id=self.request.user.id)
-
-    def get(self, request, *args, **kwargs):
-        return self.retrieve(request, *args, **kwargs)
 
     def put(self, request, *args, **kwargs):
         return self.update(request, *args, **kwargs)
@@ -258,9 +253,6 @@ class TaskCommentsDetail(mixins.RetrieveModelMixin,
 
     def get_queryset(self):
         return TaskComments.objects.filter(task__lecture__course__users__id=self.request.user.id)
-
-    def get(self, request, *args, **kwargs):
-        return self.retrieve(request, *args, **kwargs)
 
     def put(self, request, *args, **kwargs):
         return self.update(request, *args, **kwargs)
