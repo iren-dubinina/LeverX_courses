@@ -20,7 +20,7 @@ class CourseList(mixins.ListModelMixin,
     and create new courses
     """
     serializer_class = serializers.CourseSerializer
-    permission_classes = [IsAuthenticated, DjangoModelPermissions]
+    permission_classes = [AllowAny, DjangoModelPermissions]
 
     def get_queryset(self):
         return Course.objects.filter(users__id=self.request.user.id)
@@ -45,7 +45,7 @@ class CourseDetail(mixins.RetrieveModelMixin,
     API endpoint that allows get, update, delete courses
     """
     serializer_class = serializers.CourseSerializer
-    permission_classes = [IsAuthenticated, DjangoModelPermissions]
+    permission_classes = [AllowAny, DjangoModelPermissions]
 
     def get_queryset(self):
         return Course.objects.filter(users__id=self.request.user.id)
@@ -144,6 +144,7 @@ class TaskDetail(mixins.RetrieveModelMixin,
         return self.update(request, *args, **kwargs)
 
 
+##############################TaskControl#################################
 class TaskControlList(mixins.ListModelMixin,
                       mixins.CreateModelMixin,
                       generics.GenericAPIView):
@@ -152,7 +153,7 @@ class TaskControlList(mixins.ListModelMixin,
     and create new home tasks
     """
     serializer_class = serializers.TaskControlSerializer
-    permission_classes = [IsAuthenticated, ]
+    permission_classes = [AllowAny, ]
 
     def get_queryset(self):
         return TaskControl.objects.filter(task__lecture__course__users__id=self.request.user.id)
@@ -172,7 +173,7 @@ class TaskControlDetail(mixins.RetrieveModelMixin,
     API endpoint that allows get, update, delete home tasks
     """
     serializer_class = serializers.TaskSerializer
-    permission_classes = [IsAuthenticated]
+    permission_classes = [AllowAny,]
 
     def get_queryset(self):
         return TaskControl.objects.filter(task__lecture__course__users__id=self.request.user.id)
@@ -187,6 +188,7 @@ class TaskControlDetail(mixins.RetrieveModelMixin,
         return self.destroy(request, *args, **kwargs)
 
 
+##############################TaskComments#################################
 class TaskCommentsList(mixins.ListModelMixin,
                        mixins.CreateModelMixin,
                        generics.GenericAPIView):
@@ -195,7 +197,7 @@ class TaskCommentsList(mixins.ListModelMixin,
     and create new comments
     """
     serializer_class = serializers.TaskControlSerializer
-    permission_classes = [IsAuthenticated]
+    permission_classes = [AllowAny]
 
     def get_queryset(self):
         return TaskComments.objects.filter(taskcontrol__task__lecture__course__users__id=self.request.user.id)
@@ -215,7 +217,7 @@ class TaskCommentsDetail(mixins.RetrieveModelMixin,
     API endpoint that allows get, update, delete home tasks
     """
     serializer_class = serializers.TaskSerializer
-    permission_classes = [IsAuthenticated]
+    permission_classes = [AllowAny]
 
     def get_queryset(self):
         return TaskComments.objects.filter(task__lecture__course__users__id=self.request.user.id)

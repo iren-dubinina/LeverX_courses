@@ -20,7 +20,7 @@ urlpatterns = [
     path('task_comments/', views.TaskCommentsList.as_view()),
     path('task_comments/<int:pk>/', views.TaskCommentsDetail.as_view()),
     path('main', get_schema_view(
-        title="Leverx",
+        title="Leverxcourses",
         description="API for all things …",
         version="1.0.0"
     ), name='openapi-schema'),

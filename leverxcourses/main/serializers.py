@@ -1,8 +1,9 @@
 from django.conf import settings
+from django.contrib.auth import get_user_model
 from django.contrib.auth.models import Group
 from rest_framework import serializers
 
-User = settings.AUTH_USER_MODEL
+User = get_user_model()
 
 from .models import Course, Lecture, LectureTask, TaskControl, TaskComments
 

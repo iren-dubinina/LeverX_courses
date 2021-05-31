@@ -137,8 +137,9 @@ REST_FRAMEWORK = {
     'DEFAULT_PAGINATION_CLASS': 'rest_framework.pagination.PageNumberPagination',
     'PAGE_SIZE': 10,
     "DEFAULT_PERMISSION_CLASSES": [
-        "rest_framework.permissions.IsAuthenticated",
-        "rest_framework.permissions.DjangoModelPermissions",
+        # "rest_framework.permissions.IsAuthenticated",
+        # "rest_framework.permissions.DjangoModelPermissions",
+        'rest_framework.permissions.AllowAny',
     ],
     'EXCEPTION_HANDLER': 'authentication.exceptions.core_exception_handler',
     'NON_FIELD_ERRORS_KEY': 'error',
@@ -155,7 +156,6 @@ SWAGGER_SETTINGS = {
         }
     }
 }
-
 
 
 SECRET_KEY = "pink_floyd_is_the_best"

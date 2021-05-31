@@ -3,7 +3,7 @@ from django.contrib.auth.forms import AuthenticationForm
 from django.contrib.auth.models import Group
 from django.shortcuts import render, redirect
 
-from .forms import SignUpForm
+# from .forms import SignUpForm
 
 
 # Group.objects.create(name='lecturer')
