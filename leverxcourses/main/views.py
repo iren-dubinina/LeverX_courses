@@ -3,12 +3,23 @@ from rest_framework import generics, mixins, status
 from rest_framework.parsers import MultiPartParser
 from rest_framework.permissions import DjangoModelPermissions, IsAuthenticated, AllowAny
 from rest_framework.response import Response
+import pytest
 
 from . import serializers, permissions
 from .models import Course, Lecture, LectureTask, TaskControl, TaskComments
 
 User = get_user_model()
 
+# content of test_class.py
+# class TestClass:
+#     def test_one(self):
+#         x = "this"
+#         assert "h" in x
+#
+#     def test_two(self):
+#         x = "hello"
+#         assert hasattr(x, "check")
+#
 
 #################################COURSES#################################
 
@@ -69,7 +80,7 @@ class LectureList(mixins.ListModelMixin,
     and create new lectures
     """
     serializer_class = serializers.LectureSerializer
-    permission_classes = [IsAuthenticated, DjangoModelPermissions]
+    permission_classes = [AllowAny, DjangoModelPermissions]
 
     def get_queryset(self):
         return Lecture.objects.filter(course__users__id=self.request.user.id)
@@ -112,7 +123,7 @@ class TaskList(mixins.ListModelMixin,
     and create new tasks
     """
     serializer_class = serializers.TaskSerializer
-    permission_classes = [IsAuthenticated, DjangoModelPermissions]
+    permission_classes = [AllowAny, DjangoModelPermissions]
 
     def get_queryset(self):
         return LectureTask.objects.filter(lecture__course__users__id=self.request.user.id)
@@ -132,7 +143,7 @@ class TaskDetail(mixins.RetrieveModelMixin,
     API endpoint that allows get, update, delete tasks
     """
     serializer_class = serializers.TaskSerializer
-    permission_classes = [IsAuthenticated, DjangoModelPermissions]
+    permission_classes = [AllowAny, DjangoModelPermissions]
 
     def get_queryset(self):
         return LectureTask.objects.filter(lecture__course__users__id=self.request.user.id)
@@ -153,7 +164,7 @@ class TaskControlList(mixins.ListModelMixin,
     and create new home tasks
     """
     serializer_class = serializers.TaskControlSerializer
-    permission_classes = [AllowAny, ]
+    permission_classes = [AllowAny,]
 
     def get_queryset(self):
         return TaskControl.objects.filter(task__lecture__course__users__id=self.request.user.id)
