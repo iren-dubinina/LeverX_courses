@@ -1,10 +1,10 @@
 from django.contrib.auth import get_user_model
 from rest_framework import generics, mixins, status
 from rest_framework.parsers import MultiPartParser
-from rest_framework.permissions import DjangoModelPermissions, IsAuthenticated
+from rest_framework.permissions import DjangoModelPermissions, IsAuthenticated, AllowAny
 from rest_framework.response import Response
 
-from . import serializers
+from . import serializers, permissions
 from .models import Course, Lecture, LectureTask, TaskControl, TaskComments
 
 User = get_user_model()

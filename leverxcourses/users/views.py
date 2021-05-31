@@ -6,24 +6,25 @@ from django.shortcuts import render, redirect
 from .forms import SignUpForm
 
 
-def users_signup(request):
-    if request.method == 'POST':
-        form = SignUpForm(request.POST)
-        if form.is_valid():
-            print(form)
-            form.save()
-            username = form.cleaned_data.get('username')
-            raw_password = form.cleaned_data.get('password1')
-            user = authenticate(username=username, password=raw_password)
-            groups = form.cleaned_data.get('groups')
-            print(groups)
-            for group in groups:
-                my_group = Group.objects.get(name=group)
-                my_group.user_set.add(user)
-            login(request, user)
-            return redirect('swagger-ui')
-    else:
-        form = SignUpForm()
+# Group.objects.create(name='lecturer')
+# Group.objects.create(name='student')
+# Group.objects.create(name='admin')
+
+
+def users_home(request):
+    # if request.method == 'POST':
+    #     form = SignUpForm(request.POST)
+    #     if form.is_valid():
+    #         form.save()
+    #         username = form.cleaned_data.get('username')
+    #         raw_password = form.cleaned_data.get('password1')
+    #         user = authenticate(username=username, password=raw_password)
+    #         my_group = Group.objects.get(name='student')
+    #         my_group.user_set.add(user)
+    #         login(request, user)
+    #         return redirect('swagger-ui')
+    # else:
+    #     form = SignUpForm()
     return render(request, 'users/registration.html', {'title': 'Users', 'form': form})
 
 

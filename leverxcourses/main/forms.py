@@ -1,5 +1,3 @@
-from django.contrib.auth.models import User
-
 from .models import Course, Lecture, LectureTask, CourseGroup, TaskControl
 from django.forms import ModelForm, TextInput, DateInput, FileInput, Select, Textarea, CheckboxSelectMultiple, \
     SelectMultiple, ImageField, FileField, NullBooleanSelect
