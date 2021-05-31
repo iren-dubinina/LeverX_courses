@@ -3,26 +3,19 @@ from rest_framework import generics, mixins, status
 from rest_framework.parsers import MultiPartParser
 from rest_framework.permissions import DjangoModelPermissions, IsAuthenticated, AllowAny
 from rest_framework.response import Response
-import pytest
+
 
 from . import serializers, permissions
 from .models import Course, Lecture, LectureTask, TaskControl, TaskComments
+import logging
 
+
+# Get an instance of a logger
+logger = logging.getLogger(__name__)
 User = get_user_model()
 
-# content of test_class.py
-# class TestClass:
-#     def test_one(self):
-#         x = "this"
-#         assert "h" in x
-#
-#     def test_two(self):
-#         x = "hello"
-#         assert hasattr(x, "check")
-#
 
 #################################COURSES#################################
-
 class CourseList(mixins.ListModelMixin,
                  mixins.CreateModelMixin,
                  generics.GenericAPIView):
@@ -33,19 +26,30 @@ class CourseList(mixins.ListModelMixin,
     serializer_class = serializers.CourseSerializer
     permission_classes = [AllowAny, DjangoModelPermissions]
 
+
     def get_queryset(self):
-        return Course.objects.filter(users__id=self.request.user.id)
+        logger.info('Getting the list of courses')
+        try:
+            result = Course.objects.filter(users__id=self.request.user.id)
+        except:
+            logger.error('Getting the list of courses', CourseList.get_view_name())
+        return result
 
     def get(self, request, *args, **kwargs):
         return self.list(request, *args, **kwargs)
 
     def post(self, request, *args, **kwargs):
+        logger.info('Create course')
         serializer = self.get_serializer(data=request.data)
         serializer.is_valid(raise_exception=True)
         new_course = serializer.save()
         new_course.users.add(self.request.user)
         headers = self.get_success_headers(serializer.data)
-        return Response(serializer.data, status=status.HTTP_201_CREATED, headers=headers)
+        try:
+            result = Response(serializer.data, status=status.HTTP_201_CREATED, headers=headers)
+        except:
+            logger.error('Create course error')
+        return result
 
 
 class CourseDetail(mixins.RetrieveModelMixin,
@@ -55,20 +59,38 @@ class CourseDetail(mixins.RetrieveModelMixin,
     """
     API endpoint that allows get, update, delete courses
     """
+    logger.info('Getting the course ')
     serializer_class = serializers.CourseSerializer
     permission_classes = [AllowAny, DjangoModelPermissions]
 
     def get_queryset(self):
-        return Course.objects.filter(users__id=self.request.user.id)
+        try:
+           result = Course.objects.filter(users__id=self.request.user.id)
+        except:
+            logger.error('Getting course detail error', CourseList.get_view_name())
+        return result
 
     def get(self, request, *args, **kwargs):
-        return self.retrieve(request, *args, **kwargs)
+        try:
+            result =  self.retrieve(request, *args, **kwargs)
+        except:
+            logger.error('Getting course detail error', CourseList.get_view_name())
+        return result
 
     def put(self, request, *args, **kwargs):
-        return self.update(request, *args, **kwargs)
+        try:
+            result = self.update(request, *args, **kwargs)
+        except:
+            logger.error('Creating course error', CourseList.get_view_name())
+        return result
+
 
     def delete(self, request, *args, **kwargs):
-        return self.destroy(request, *args, **kwargs)
+        try:
+            result = self.destroy(request, *args, **kwargs)
+        except:
+            logger.error('Deletion course detail error', CourseList.get_view_name())
+        return result
 
 
 #################################LECTURES#################################
@@ -79,6 +101,7 @@ class LectureList(mixins.ListModelMixin,
     API endpoint that allows get list of user's current lectures
     and create new lectures
     """
+    logger.info('Getting the list of lectures')
     serializer_class = serializers.LectureSerializer
     permission_classes = [AllowAny, DjangoModelPermissions]
 
@@ -122,6 +145,7 @@ class TaskList(mixins.ListModelMixin,
     API endpoint that allows get list of user's current tasks
     and create new tasks
     """
+    logger.info('Getting the list of tasks')
     serializer_class = serializers.TaskSerializer
     permission_classes = [AllowAny, DjangoModelPermissions]
 
@@ -163,6 +187,7 @@ class TaskControlList(mixins.ListModelMixin,
     API endpoint that allows get list of user's current home tasks
     and create new home tasks
     """
+    logger.info('Getting the list of home works')
     serializer_class = serializers.TaskControlSerializer
     permission_classes = [AllowAny,]
 
@@ -207,6 +232,7 @@ class TaskCommentsList(mixins.ListModelMixin,
     API endpoint that allows get list of user's comments in home tasks
     and create new comments
     """
+    logger.info('Getting the list of comments')
     serializer_class = serializers.TaskControlSerializer
     permission_classes = [AllowAny]
 
@@ -225,7 +251,7 @@ class TaskCommentsDetail(mixins.RetrieveModelMixin,
                          mixins.DestroyModelMixin,
                          generics.GenericAPIView):
     """
-    API endpoint that allows get, update, delete home tasks
+    API endpoint that allows get, update, delete comments in home tasks
     """
     serializer_class = serializers.TaskSerializer
     permission_classes = [AllowAny]

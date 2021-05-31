@@ -9,18 +9,21 @@ from .models import Course, Lecture, LectureTask, TaskControl, TaskComments
 
 
 class UserSerializer(serializers.HyperlinkedModelSerializer):
+    """ Serializer for user """
     class Meta:
         model = User
         fields = ['url', 'username', 'email', 'groups']
 
 
 class GroupSerializer(serializers.HyperlinkedModelSerializer):
+    """ Serializer for group users """
     class Meta:
         model = Group
         fields = ['url', 'name']
 
 
 class CourseSerializer(serializers.Serializer):
+    """ Serializer for Course table """
     id = serializers.IntegerField(required=False)
     name = serializers.CharField()
     date = serializers.DateField()
@@ -42,6 +45,7 @@ class CourseSerializer(serializers.Serializer):
 
 
 class LectureSerializer(serializers.Serializer):
+    """ Serializer for Lecture table """
     id = serializers.IntegerField(required=False)
     theme = serializers.CharField(required=False)
     slides = serializers.FileField(required=False)
@@ -62,6 +66,7 @@ class LectureSerializer(serializers.Serializer):
 
 
 class TaskSerializer(serializers.Serializer):
+    """ Serializer for Task table """
     id = serializers.IntegerField(read_only=True)
     name = serializers.CharField()
     text = serializers.CharField()
@@ -82,6 +87,7 @@ class TaskSerializer(serializers.Serializer):
 
 
 class TaskControlSerializer(serializers.Serializer):
+    """ Serializer for TaskControl table """
     datetime = serializers.DateTimeField('DateTime', required=False)
     attachment = serializers.CharField()
     checked = serializers.BooleanField('Checked', default=False)
@@ -105,6 +111,7 @@ class TaskControlSerializer(serializers.Serializer):
 
 
 class TaskCommentsSerializer(serializers.Serializer):
+    """ Serializer for TaskComments table """
     comment = serializers.CharField()
     datetime = serializers.DateTimeField(required=False)
     taskcontrol = serializers.PrimaryKeyRelatedField(queryset=TaskControl.objects.all())
@@ -124,6 +131,7 @@ class TaskCommentsSerializer(serializers.Serializer):
 
 
 class CourseUsersSerializer(serializers.Serializer):
+    """ Serializer for CourseUsers table """
     users = serializers.PrimaryKeyRelatedField(many=True, required=True, queryset=User.objects.all())
 
     class Meta:

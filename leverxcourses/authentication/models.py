@@ -12,13 +12,10 @@ from django.db import models
 # Create your models here.
 class UserManager(BaseUserManager):
     """
-    Django требует, чтобы кастомные пользователи определяли свой собственный
-    класс Manager. Унаследовавшись от BaseUserManager, мы получаем много того
-    же самого кода, который Django использовал для создания User.
+    Custom Manager from BaseUserManager
     """
-
     def create_user(self, username, email, password=None):
-        """ Создает и возвращает пользователя с имэйлом, паролем и именем. """
+        """ Creates and returns a user with an email, password and name """
         if username is None:
             raise TypeError('Users must have a username.')
 
@@ -32,7 +29,7 @@ class UserManager(BaseUserManager):
         return user
 
     def create_superuser(self, username, email, password):
-        """ Создает и возввращет пользователя с привилегиями суперадмина. """
+        """ Creates and returns a user with superadmin privileges """
         if password is None:
             raise TypeError('Superusers must have a password.')
 
@@ -44,71 +41,48 @@ class UserManager(BaseUserManager):
         return user
 
 class User(AbstractBaseUser, PermissionsMixin):
-    # Каждому пользователю нужен понятный человеку уникальный идентификатор,
-    # который мы можем использовать для предоставления User в пользовательском
-    # интерфейсе. Мы так же проиндексируем этот столбец в базе данных для
-    # повышения скорости поиска в дальнейшем.
+    """ Create unique user identificator as a username and index for it """
     username = models.CharField(db_index=True, max_length=255, unique=True)
-
-    # Так же мы нуждаемся в поле, с помощью которого будем иметь возможность
-    # связаться с пользователем и идентифицировать его при входе в систему.
-    # Поскольку адрес почты нам нужен в любом случае, мы также будем
-    # использовать его для входы в систему, так как это наиболее
-    # распространенная форма учетных данных на данный момент (ну еще телефон).
     email = models.EmailField(db_index=True, unique=True)
 
-    # способ деактивировать учетку вместо ее полного удаления.
+    # a way to deactivate an account instead of completely deleting it
     is_active = models.BooleanField(default=True)
 
-    # кто может войти в административную часть нашего сайта.
+    # who can enter the admin area of our site.
     is_staff = models.BooleanField(default=False)
 
-    # Временная метка создания объекта.
     created_at = models.DateTimeField(auto_now_add=True)
-
-    # Временная метка показывающая время последнего обновления объекта.
     updated_at = models.DateTimeField(auto_now=True)
 
-    # Дополнительный поля, необходимые Django
+    # additional fields required by Django
 
-    # Свойство USERNAME_FIELD сообщает нам, какое поле мы будем использовать
-    # для входа в систему. В данном случае мы хотим использовать почту.
+    # login fields
     USERNAME_FIELD = 'email'
     REQUIRED_FIELDS = ['username']
 
-    # Сообщает Django, что определенный выше класс UserManager
-    # должен управлять объектами этого типа.
     objects = UserManager()
 
     def __str__(self):
-        """ Строковое представление модели (отображается в консоли) """
         return self.email
 
     @property
     def token(self):
         """
-        Позволяет получить токен пользователя путем вызова user.token, вместо
-        user._generate_jwt_token(). Декоратор @property выше делает это
-        возможным. token называется "динамическим свойством".
+        Lets get the user's token by calling user.token, instead of
+        user._generate_jwt_token ()
         """
         return self._generate_jwt_token()
 
     def get_full_name(self):
-        """
-        Этот метод требуется Django для таких вещей, как обработка электронной
-        почты. Обычно это имя фамилия пользователя, но поскольку мы не
-        используем их, будем возвращать username.
-        """
         return self.username
 
     def get_short_name(self):
-        """ Аналогично методу get_full_name(). """
         return self.username
 
     def _generate_jwt_token(self):
         """
-        Генерирует веб-токен JSON, в котором хранится идентификатор этого
-        пользователя, срок действия токена составляет 1 день от создания
+        Generates a JSON web token that stores the ID of this
+        user, the token validity period is 1 day from creation
         """
         dt = datetime.now() + timedelta(days=1)
 
@@ -117,4 +91,4 @@ class User(AbstractBaseUser, PermissionsMixin):
             'exp': dt.utcfromtimestamp(dt.timestamp())
         }, settings.SECRET_KEY, algorithm='HS256')
 
-        return token#.decode('utf-8')
+        return token #.decode('utf-8')
