@@ -1,8 +1,9 @@
+from rest_framework import generics, mixins
 from rest_framework import status
 from rest_framework.generics import RetrieveUpdateAPIView
+from rest_framework.parsers import MultiPartParser
 from rest_framework.permissions import AllowAny, IsAuthenticated
 from rest_framework.response import Response
-from rest_framework.views import APIView
 
 from .renderers import UserJSONRenderer
 from .serializers import (
@@ -12,12 +13,13 @@ from .serializers import (
 renderer_classes = (UserJSONRenderer,)
 
 
-class RegistrationAPIView(APIView):
+class RegistrationAPIView(generics.GenericAPIView, mixins.CreateModelMixin):
     """
     Everybody can access this endpoint
     """
     permission_classes = (AllowAny,)
     serializer_class = RegistrationSerializer
+    parser_classes = (MultiPartParser,)
 
     def post(self, request):
         user = request.data
@@ -27,12 +29,13 @@ class RegistrationAPIView(APIView):
         return Response(serializer.data, status=status.HTTP_201_CREATED)
 
 
-class LoginAPIView(APIView):
+class LoginAPIView(generics.GenericAPIView):
     permission_classes = (AllowAny,)
     serializer_class = LoginSerializer
+    parser_classes = (MultiPartParser,)
 
     def post(self, request):
-        user = request.data.get('user', {})
+        user = request.data
         serializer = self.serializer_class(data=user)
         serializer.is_valid(raise_exception=True)
 
