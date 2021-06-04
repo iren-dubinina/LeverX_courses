@@ -31,8 +31,8 @@ class CourseList(mixins.ListModelMixin,
     def get_queryset(self):
         logger.info('Getting the list of courses')
         try:
-            result = Course.objects.filter(users__id=self.request.user.id)
-        except:
+            result = Course.objects.filter(users=self.request.user)
+        except :
             logger.error('Getting the list of courses', CourseList.get_view_name())
         return result
 
@@ -66,7 +66,7 @@ class CourseDetail(mixins.RetrieveModelMixin,
 
     def get_queryset(self):
         try:
-           result = Course.objects.filter(users__id=self.request.user.id)
+           result = Course.objects.filter(users=self.request.user)
         except:
             logger.error('Getting course detail error', CourseList.get_view_name())
         return result
@@ -107,7 +107,7 @@ class LectureList(mixins.ListModelMixin,
     permission_classes = [LecturerOrGetPermissions]
 
     def get_queryset(self):
-        return Lecture.objects.filter(course__users__id=self.request.user.id)
+        return Lecture.objects.filter(course__users=self.request.user)
 
     def get(self, request, *args, **kwargs):
         return self.list(request, *args, **kwargs)
@@ -125,7 +125,7 @@ class LectureDetail(mixins.RetrieveModelMixin,
     parser_classes = (MultiPartParser,)
 
     def get_queryset(self):
-        return Lecture.objects.filter(course__users__id=self.request.user.id)
+        return Lecture.objects.filter(course__users=self.request.user)
 
     def put(self, request, *args, **kwargs):
         return self.update(request, *args, **kwargs)
@@ -148,7 +148,7 @@ class TaskList(mixins.ListModelMixin,
     permission_classes = [LecturerOrGetPermissions]
 
     def get_queryset(self):
-        return LectureTask.objects.filter(lecture__course__users__id=self.request.user.id)
+        return LectureTask.objects.filter(lecture__course__users=self.request.user)
 
     def get(self, request, *args, **kwargs):
         return self.list(request, *args, **kwargs)
@@ -168,7 +168,7 @@ class TaskDetail(mixins.RetrieveModelMixin,
     permission_classes = [LecturerOrGetPermissions]
 
     def get_queryset(self):
-        return LectureTask.objects.filter(lecture__course__users__id=self.request.user.id)
+        return LectureTask.objects.filter(lecture__course__users=self.request.user)
 
     def put(self, request, *args, **kwargs):
         return self.update(request, *args, **kwargs)
@@ -190,7 +190,7 @@ class TaskControlList(mixins.ListModelMixin,
     permission_classes = [AllowAny, ]
 
     def get_queryset(self):
-        return TaskControl.objects.filter(task__lecture__course__users__id=self.request.user.id)
+        return TaskControl.objects.filter(task__lecture__course__users=self.request.user)
 
     def get(self, request, *args, **kwargs):
         return self.list(request, *args, **kwargs)
@@ -210,7 +210,7 @@ class TaskControlDetail(mixins.RetrieveModelMixin,
     permission_classes = [AllowAny, ]
 
     def get_queryset(self):
-        return TaskControl.objects.filter(task__lecture__course__users__id=self.request.user.id)
+        return TaskControl.objects.filter(task__lecture__course__users=self.request.user)
 
     def put(self, request, *args, **kwargs):
         return self.update(request, *args, **kwargs)
@@ -232,7 +232,7 @@ class TaskCommentsList(mixins.ListModelMixin,
     permission_classes = [AllowAny]
 
     def get_queryset(self):
-        return TaskComments.objects.filter(taskcontrol__task__lecture__course__users__id=self.request.user.id)
+        return TaskComments.objects.filter(taskcontrol__task__lecture__course__users=self.request.user)
 
     def get(self, request, *args, **kwargs):
         return self.list(request, *args, **kwargs)
@@ -252,7 +252,7 @@ class TaskCommentsDetail(mixins.RetrieveModelMixin,
     permission_classes = [AllowAny]
 
     def get_queryset(self):
-        return TaskComments.objects.filter(task__lecture__course__users__id=self.request.user.id)
+        return TaskComments.objects.filter(task__lecture__course__users=self.request.user)
 
     def put(self, request, *args, **kwargs):
         return self.update(request, *args, **kwargs)
