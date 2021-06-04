@@ -1,4 +1,7 @@
 from rest_framework.views import exception_handler
+import logging
+
+logger = logging.getLogger('django')
 
 
 def core_exception_handler(exc, context):
@@ -15,6 +18,7 @@ def core_exception_handler(exc, context):
 
 
 def _handle_generic_error(exc, context, response):
+    logger.error(response.data)
     response.data = {
         'errors': response.data
     }
